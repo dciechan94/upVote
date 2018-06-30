@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="60">
+    <Properties>
+        <Property name="path">logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>
+                    %d{HH:mm:ss.SSS} [%t] %-5level %C{.}:%L - %msg%n
+                </pattern>
+            </PatternLayout>
+        </Console>
+
+        <RollingFile name="APPLICATION_LOG" filename="${path}/application.log" filePattern="${path}/application_%d{yy.MM.dd_HH.mm.ss}.%i.log">
+            <PatternLayout>
+                <Pattern>%d{ISO8601} [%t] %-5level %logger{20} - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${path}/">
+                    <IfFileName glob="application_*.log"/>
+                    <IfAccumulatedFileCount exceeds="20"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="SPRING_FRAMEWORK_LOG" filename="${path}/spring.log" filePattern="${path}/spring_%d{yy.MM.dd_HH.mm.ss}.%i.log">
+            <PatternLayout>
+                <Pattern>%d{ISO8601} [%t] %-5level %logger{20} - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${path}/">
+                    <IfFileName glob="spring_*.log"/>
+                    <IfAccumulatedFileCount exceeds="20"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="APACHE_LOG" filename="${path}/apache.log" filePattern="${path}/apache_%d{yy.MM.dd_HH.mm.ss}.%i.log">
+            <PatternLayout>
+                <Pattern>%d{ISO8601} [%t] %-5level %logger{20} - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${path}/">
+                    <IfFileName glob="apache_*.log"/>
+                    <IfAccumulatedFileCount exceeds="20"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.springframework" level="info" additivity="false">
+            <AppenderRef ref="SPRING_FRAMEWORK_LOG" />
+            <AppenderRef ref="Console-Appender" />
+        </Logger>
+        <Logger name="org.apache" level="info" additivity="false">
+            <AppenderRef ref="APACHE_LOG" />
+            <AppenderRef ref="Console-Appender" />
+        </Logger>
+        <Logger name="pl.krakow.up" level="info" additivity="false">
+            <AppenderRef ref="APPLICATION_LOG" />
+            <AppenderRef ref="Console-Appender" />
+        </Logger>
+        <Root>
+            <AppenderRef ref="Console-Appender" />
+        </Root>
+    </Loggers>
+</Configuration>
