@@ -79,4 +79,5 @@ public abstract class GenericDAOImpl<T, ID extends Serializable>
         T instance = findById(id, LockModeType.NONE);
         em.remove(instance);
     }
+
 }
