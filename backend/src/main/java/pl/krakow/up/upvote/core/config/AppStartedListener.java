@@ -1,4 +1,4 @@
-package pl.krakow.up.core.config;
+package pl.krakow.up.upvote.core.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

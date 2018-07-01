@@ -1,4 +1,4 @@
-package pl.krakow.up.rest.v1.controllers;
+package pl.krakow.up.upvote.rest.v1.controllers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

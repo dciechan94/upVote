@@ -1,4 +1,4 @@
-package pl.krakow.up.core.model.dao;
+package pl.krakow.up.upvote.core.model.dao;
 
 import javax.persistence.LockModeType;
 import java.io.Serializable;

@@ -1,10 +1,10 @@
-package pl.krakow.up.rest.v1.controllers;
+package pl.krakow.up.upvote.rest.v1.controllers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.krakow.up.rest.model.BusinessExceptionModel;
+import pl.krakow.up.upvote.rest.model.BusinessExceptionModel;
 
 import javax.servlet.http.HttpServletRequest;
 

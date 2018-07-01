@@ -1,4 +1,4 @@
-package pl.krakow.up.rest.model;
+package pl.krakow.up.upvote.rest.model;
 
 public class BusinessExceptionModel {
     private String message;
