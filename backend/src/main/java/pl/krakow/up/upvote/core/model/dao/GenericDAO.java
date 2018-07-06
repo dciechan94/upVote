@@ -1,5 +1,7 @@
 package pl.krakow.up.upvote.core.model.dao;
 
+import pl.krakow.up.upvote.core.model.Persistable;
+
 import javax.persistence.LockModeType;
 import java.io.Serializable;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
  * automatic transactional dirty checking of business objects in persistent
  * state.
  */
-public interface GenericDAO<T, ID extends Serializable> {
+public interface GenericDAO<T extends Persistable, ID extends Serializable> {
 
     T findById(ID id);
 

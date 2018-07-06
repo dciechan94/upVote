@@ -1,6 +1,8 @@
 package pl.krakow.up.upvote.core.model.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import pl.krakow.up.upvote.core.model.Persistable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -8,7 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class GenericDAOImpl<T, ID extends Serializable>
+public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializable>
         implements GenericDAO<T, ID> {
 
     @Autowired
@@ -68,11 +70,14 @@ public abstract class GenericDAOImpl<T, ID extends Serializable>
         );
     }
 
+    @Transactional
     public Long save(T entity) {
         em.getTransaction().begin();
         em.persist(entity);
+
+        em.flush();
         em.getTransaction().commit();
-        return 1l;
+        return entity.getId();
     }
 
     public void remove(ID id) {

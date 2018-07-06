@@ -1,55 +1,53 @@
 package pl.krakow.up.upvote.core.model;
 
+import org.hibernate.validator.constraints.Email;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-public class User {
+@Entity(name = "EV_User")
+@Table(indexes ={
+        @Index(name = "index-email",  columnList="email", unique = true)
+})
+public class User implements Persistable {
 
     @Id
     @GeneratedValue
     protected Long id;
 
-    @NotNull
+    @NotNull(message = "ERROR_USER_USERNAME_NULL")
     @Size(
             min = 2,
             max = 255,
-            message = "Username is required, minimum 2, maximum 255 characters."
+            message = "ERROR_USER_USERNAME_INVALID_LENGTH"
     )
     protected String userName;
 
-    @NotNull
-    @Size(
-            min = 2,
-            max = 255,
-            message = "Email is required, minimum 2, maximum 255 characters."
-    )
+    @NotNull(message = "ERROR_USER_EMAIL_NULL")
+    @Email(message = "ERROR_USER_EMAIL_INVALID_FORMAT")
+    @Column(name = "email", unique = true)
     protected String email;
 
-    @NotNull
-    @Size(
-            min = 32,
-            max = 255,
-            message = "PasswordHash is required, minimum 2, maximum 255 characters."
-    )
+    @NotNull(message = "ERROR_USER_PASSWORD_HASH_NULL")
     protected String passwordHash;
 
-    @NotNull
+    @NotNull(message = "ERROR_USER_FIRST_NAME_NULL")
     @Size(
             min = 2,
             max = 255,
-            message = "First name is required, minimum 2, maximum 255 characters."
+            message = "ERROR_USER_FIRST_NAME_INVALID_LENGTH"
     )
     protected String firstName;
 
-    @NotNull
+    @NotNull(message = "ERROR_USER_LAST_NAME_NULL")
     @Size(
             min = 2,
             max = 255,
-            message = "Last name is required, minimum 2, maximum 255 characters."
+            message = "ERROR_USER_LAST_NAME_INVALID_LENGTH"
     )
     protected String lastName;
+
 
     public User() {
     }
