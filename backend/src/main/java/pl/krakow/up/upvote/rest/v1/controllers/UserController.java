@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import pl.krakow.up.upvote.core.model.User;
 import pl.krakow.up.upvote.core.model.exceptions.ServiceRuntimeException;
 import pl.krakow.up.upvote.rest.v1.model.dto.UserDTO;
@@ -47,6 +44,19 @@ public class UserController {
             return createErrorResonse(HttpStatus.BAD_REQUEST, "Cannot create user", e.getErrorCodes());
         }
 
+    }
+
+    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity deleteUser(
+            @PathVariable(name = "id", required = true) Long id) {
+        try {
+            userService.deleteUser(id);
+        } catch (ServiceRuntimeException e) {
+            LOGGER.error("Failed to delete user: {}", e.getCustomMessage(), e);
+            return createErrorResonse(HttpStatus.BAD_REQUEST, "Cannot delete user", e.getErrorCodes());
+        }
+        return ResponseEntity.ok().body(null);
     }
 
     private static ResponseEntity createErrorResonse(HttpStatus status, String message) {

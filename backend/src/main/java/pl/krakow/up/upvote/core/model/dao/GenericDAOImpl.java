@@ -80,9 +80,12 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
         return entity.getId();
     }
 
+    @Transactional
     public void remove(ID id) {
+        em.getTransaction().begin();
         T instance = findById(id, LockModeType.NONE);
         em.remove(instance);
+        em.getTransaction().commit();
     }
 
 }

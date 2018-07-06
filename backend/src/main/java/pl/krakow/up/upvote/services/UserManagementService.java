@@ -31,6 +31,13 @@ public class UserManagementService {
         return id;
     }
 
+    public void deleteUser(Long id) {
+        if(userDb.findById(id) == null) {
+            throw new ServiceRuntimeException("ERROR_DELETE_USER_NOT_EXIST");
+        }
+        userDb.remove(id);
+    }
+
     private Long trySave(User user) {
         try {
             Long id = userDb.save(user);
