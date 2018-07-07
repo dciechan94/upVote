@@ -13,6 +13,7 @@ import pl.krakow.up.upvote.core.model.exceptions.ServiceRuntimeException;
 import pl.krakow.up.upvote.rest.v1.model.dto.UserDTO;
 import pl.krakow.up.upvote.rest.v1.model.util.Mappers;
 import pl.krakow.up.upvote.services.UserManagementService;
+import pl.krakow.up.upvote.services.util.ValuesMapper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class UserController {
             return ResponseEntity.ok().body(id);
         } catch (ServiceRuntimeException e) {
             LOGGER.error("Failed to create user: {}", e.getCustomMessage(), e);
-            return createErrorResonse(HttpStatus.BAD_REQUEST, "Cannot create user", e.getErrorCodes());
+            return createErrorResponse(HttpStatus.BAD_REQUEST, "Cannot create user", e.getErrorCodes());
         }
 
     }
@@ -54,16 +55,33 @@ public class UserController {
             userService.deleteUser(id);
         } catch (ServiceRuntimeException e) {
             LOGGER.error("Failed to delete user: {}", e.getCustomMessage(), e);
-            return createErrorResonse(HttpStatus.BAD_REQUEST, "Cannot delete user", e.getErrorCodes());
+            return createErrorResponse(HttpStatus.BAD_REQUEST, "Cannot delete user", e.getErrorCodes());
         }
         return ResponseEntity.ok().body(null);
     }
 
-    private static ResponseEntity createErrorResonse(HttpStatus status, String message) {
-        return createErrorResonse(status, message, null);
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity updateUser(
+            @PathVariable(name = "id", required = false) Long id,
+            @RequestBody UserDTO userDto) {
+
+        try {
+            User updatedUserData = Mappers.USER_TO_DTO_MAPPER(userDto);
+            userService.updateUser(id, updatedUserData);
+        } catch (ServiceRuntimeException e) {
+            LOGGER.error("Failed to update user: {}", e.getCustomMessage(), e);
+            return createErrorResponse(HttpStatus.BAD_REQUEST, "Cannot update user", e.getErrorCodes());
+        }
+
+        return ResponseEntity.ok().body(null);
     }
 
-    private static ResponseEntity createErrorResonse(HttpStatus status, String message, Object details) {
+    private static ResponseEntity createErrorResponse(HttpStatus status, String message) {
+        return createErrorResponse(status, message, null);
+    }
+
+    private static ResponseEntity createErrorResponse(HttpStatus status, String message, Object details) {
         Map<String, Object> entity = new LinkedHashMap<>();
         entity.put("message", message);
         entity.put("code", status.value());

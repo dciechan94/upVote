@@ -34,7 +34,7 @@ public interface GenericDAO<T extends Persistable, ID extends Serializable> {
 
     void checkVersion(T entity, boolean forceUpdate);
 
-    Long save(T entity);
+    Long persist(T entity);
 
     void remove(ID id);
 }

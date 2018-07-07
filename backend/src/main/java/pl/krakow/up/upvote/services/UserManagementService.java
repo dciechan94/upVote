@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.krakow.up.upvote.core.model.User;
 import pl.krakow.up.upvote.core.model.dao.UserDAO;
 import pl.krakow.up.upvote.core.model.exceptions.ServiceRuntimeException;
+import pl.krakow.up.upvote.core.model.exceptions.UserConstants;
+import pl.krakow.up.upvote.services.util.ValuesMapper;
 
 import javax.validation.*;
 import java.util.List;
@@ -25,7 +27,7 @@ public class UserManagementService {
 
         Long id = trySave(user);
         if(id == null) {
-            throw new ServiceRuntimeException("ERROR_CREATE_USER_FAILURE");
+            throw new ServiceRuntimeException(UserConstants.ERROR_CREATE_USER_FAILURE);
         }
 
         return id;
@@ -33,22 +35,67 @@ public class UserManagementService {
 
     public void deleteUser(Long id) {
         if(userDb.findById(id) == null) {
-            throw new ServiceRuntimeException("ERROR_DELETE_USER_NOT_EXIST");
+            throw new ServiceRuntimeException(UserConstants.ERROR_USER_NOT_EXIST);
         }
         userDb.remove(id);
     }
 
+    public User findUser(Long id) {
+        return userDb.findById(id);
+    }
+
+    public void updateUser(Long id, User updatedUserData) {
+        validateBasicModelConstraints(updatedUserData);
+
+        User existingUser = userDb.findById(id);
+        if(existingUser == null) {
+            throw new ServiceRuntimeException(UserConstants.ERROR_USER_NOT_EXIST);
+        }
+
+        if(!updatedUserData.getEmail().equals(existingUser.getEmail())) {
+            if(userDb.findByEmail(updatedUserData.getEmail()) != null) {
+                throw new ServiceRuntimeException(UserConstants.ERROR_USER_EMAIL_ALREADY_EXISTS);
+            }
+        }
+        existingUser = ValuesMapper.USER_DATA_FILLER(existingUser, updatedUserData);
+
+        tryUpdate(existingUser);
+        /*if(verifyId == null) {
+            throw new ServiceRuntimeException(UserConstants.ERROR_UPDATE_USER_FAILURE);
+        }
+        if(id != verifyId) {
+            throw new ServiceRuntimeException("New user id is different from old one.");
+        }*/
+    }
+
+    private void tryUpdate(User user) {
+        try {
+            userDb.makePersistent(user);
+        } catch (Exception e) {
+            LOGGER.error("Cannot update user", e);
+            throw new ServiceRuntimeException(UserConstants.ERROR_UPDATE_USER_FAILURE);
+        }
+    }
+
     private Long trySave(User user) {
         try {
-            Long id = userDb.save(user);
+            Long id = userDb.persist(user);
             return id;
         } catch (Exception e) {
-            LOGGER.error("Cannot save user", e);
-            throw new ServiceRuntimeException("ERROR_CREATE_USER_FAILURE");
+            LOGGER.error("Cannot persist user", e);
+            throw new ServiceRuntimeException(UserConstants.ERROR_CREATE_USER_FAILURE);
         }
     }
 
     private void validateUser(User user) {
+        validateBasicModelConstraints(user);
+
+        if(userDb.findByEmail(user.getEmail()) != null) {
+            throw new ServiceRuntimeException(UserConstants.ERROR_USER_EMAIL_ALREADY_EXISTS);
+        }
+    }
+
+    private void validateBasicModelConstraints(User user) {
         try {
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             Validator validator = factory.getValidator();
@@ -58,17 +105,12 @@ public class UserManagementService {
                 List<String> violationMessages = violations.stream().map(v -> v.getMessage()).collect(Collectors.toList());
                 throw new ServiceRuntimeException(violationMessages.toArray(new String[]{}));
             }
-
-            if(userDb.findByEmail(user.getEmail()) != null) {
-                throw new ServiceRuntimeException("ERROR_CREATE_USER_ALREADY_EXISTS");
-            }
-
         } catch(IllegalArgumentException e) {
             LOGGER.error("User object cannot be null");
-            throw new ServiceRuntimeException("ERROR_CREATE_USER_FAILURE", e);
+            throw new ServiceRuntimeException(UserConstants.ERROR_USER_VALIDATION_FAILURE, e);
         } catch(ValidationException e) {
             LOGGER.error("Input data failed on validation: " + e.getMessage());
-            throw new ServiceRuntimeException(e.getMessage(), e);
+            throw new ServiceRuntimeException(UserConstants.ERROR_USER_VALIDATION_FAILURE, e);
         }
     }
 }

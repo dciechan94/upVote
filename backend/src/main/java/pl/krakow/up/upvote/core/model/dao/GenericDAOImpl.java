@@ -54,7 +54,10 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
 
     public T makePersistent(T instance) {
         // merge() handles transient AND detached instances
-        return em.merge(instance);
+        em.getTransaction().begin();
+        T updated = em.merge(instance);
+        em.getTransaction().commit();
+        return updated;
     }
 
     public void makeTransient(T instance) {
@@ -71,7 +74,7 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
     }
 
     @Transactional
-    public Long save(T entity) {
+    public Long persist(T entity) {
         em.getTransaction().begin();
         em.persist(entity);
 
