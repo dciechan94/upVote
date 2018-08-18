@@ -45,6 +45,14 @@ public class UserManagementService {
     }
 
     public void updateUser(Long id, User updatedUserData) {
+        updateOrPatchUser(id, updatedUserData, false);
+    }
+
+    public void patchUser(Long id, User updatedUserData) {
+        updateOrPatchUser(id, updatedUserData, true);
+    }
+
+    private void updateOrPatchUser(Long id, User updatedUserData, boolean patchOnly) {
         validateBasicModelConstraints(updatedUserData);
 
         User existingUser = userDb.findById(id);
@@ -57,15 +65,9 @@ public class UserManagementService {
                 throw new ServiceRuntimeException(UserConstants.ERROR_USER_EMAIL_ALREADY_EXISTS);
             }
         }
-        existingUser = ValuesMapper.USER_DATA_FILLER(existingUser, updatedUserData);
+        existingUser = ValuesMapper.USER_DATA_FILLER(existingUser, updatedUserData, patchOnly);
 
         tryUpdate(existingUser);
-        /*if(verifyId == null) {
-            throw new ServiceRuntimeException(UserConstants.ERROR_UPDATE_USER_FAILURE);
-        }
-        if(id != verifyId) {
-            throw new ServiceRuntimeException("New user id is different from old one.");
-        }*/
     }
 
     private void tryUpdate(User user) {
