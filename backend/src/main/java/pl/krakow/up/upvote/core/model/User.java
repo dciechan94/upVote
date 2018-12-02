@@ -6,6 +6,8 @@ import pl.krakow.up.upvote.core.model.exceptions.UserConstants;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "EV_User")
 @Table(indexes ={
@@ -48,6 +50,13 @@ public class User implements Persistable {
             message = UserConstants.ERROR_USER_LAST_NAME_INVALID_LENGTH
     )
     protected String lastName;
+
+    @ManyToMany
+    @JoinTable(name = "EV_users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    protected final List<Role> roles = new ArrayList<>();
 
 
     public User() {
@@ -95,6 +104,10 @@ public class User implements Persistable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
     }
 
     @Override

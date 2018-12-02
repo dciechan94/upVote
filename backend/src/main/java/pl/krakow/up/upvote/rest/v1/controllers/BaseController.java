@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +17,10 @@ public class BaseController {
 
     @RequestMapping(value = "/base", method = RequestMethod.GET)
     @ResponseBody
-    public List<String> base() {
+    public List<String> base(Principal user) {
         List<String> response = new ArrayList<>();
+
+        response.add(user.getName());
 
         return response;
     }

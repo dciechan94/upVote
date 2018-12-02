@@ -13,6 +13,8 @@ import CloudHeaderList from './CloudHeaderList';
 import CloudHeaderListItem from './CloudHeaderListItem';
 import CloudHeaderListItemButton from './CloudHeaderListItemButton';
 
+import { makeSelectIsUserAuthenticated } from 'containers/App/selectors'
+
 
 /*
 <CloudHeader
@@ -29,7 +31,17 @@ import CloudHeaderListItemButton from './CloudHeaderListItemButton';
 
 class HeaderTopNavBar extends React.Component {
 
+  componentDidMount() {
+    //this.props.isUserLoggedIn = makeSelectIsUserAuthenticated();
+  }
+
+
   render() {
+
+    //const isUserLoggedIn = makeSelectIsUserAuthenticated();
+
+    //console.log(isUserLoggedIn())
+
     return (
       <CloudHeader>
 
@@ -53,14 +65,14 @@ class HeaderTopNavBar extends React.Component {
 
             <CloudHeaderListItem>
               <CloudHeaderListItemButton>
-                <i class="far fa-user-circle"></i>
+                <i className="far fa-user-circle"></i>
                 &nbsp; Dariusz Ciechanowski
               </CloudHeaderListItemButton>
             </CloudHeaderListItem>
 
             <CloudHeaderListItem>
               <CloudHeaderListItemButton>
-                <i class="far fa-question-circle"></i>
+                <i className="far fa-question-circle"></i>
               </CloudHeaderListItemButton>
             </CloudHeaderListItem>
 

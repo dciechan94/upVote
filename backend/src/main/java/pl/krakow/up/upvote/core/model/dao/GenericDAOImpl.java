@@ -75,11 +75,17 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
 
     @Transactional
     public Long persist(T entity) {
-        em.getTransaction().begin();
-        em.persist(entity);
+        try {
+            em.getTransaction().begin();
+            em.persist(entity);
 
-        em.flush();
-        em.getTransaction().commit();
+            em.flush();
+            em.getTransaction().commit();
+        } catch(Exception e) {
+            em.getTransaction().rollback();
+            throw e;
+        }
+
         return entity.getId();
     }
 

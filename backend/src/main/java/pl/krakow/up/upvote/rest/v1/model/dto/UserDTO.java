@@ -1,5 +1,7 @@
 package pl.krakow.up.upvote.rest.v1.model.dto;
 
+import java.util.List;
+
 public class UserDTO {
 
     private Long id;
@@ -8,6 +10,8 @@ public class UserDTO {
     private String passwordHash;
     private String firstName;
     private String lastName;
+    private String registrationCode;
+    private List<String> roles;
 
 
     public UserDTO() {
@@ -61,6 +65,22 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
+    public String getRegistrationCode() {
+        return registrationCode;
+    }
+
+    public void setRegistrationCode(String registrationCode) {
+        this.registrationCode = registrationCode;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -70,6 +90,7 @@ public class UserDTO {
                 ", passwordHash='" + passwordHash + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", registrationCode='" + registrationCode + '\'' +
                 '}';
     }
 }

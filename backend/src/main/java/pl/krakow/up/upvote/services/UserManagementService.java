@@ -21,14 +21,18 @@ public class UserManagementService {
     @Autowired
     private UserDAO userDb;
 
+    @Autowired
+    private ActionCodesManagementService codesDb;
 
-    public Long createUser(User user) {
+    public Long createUser(User user, String registrationCode) {
+        validateRegistrationCode(registrationCode);
         validateUser(user);
 
         Long id = trySave(user);
         if(id == null) {
             throw new ServiceRuntimeException(UserConstants.ERROR_CREATE_USER_FAILURE);
         }
+        codesDb.deleteRegistrationCode(registrationCode);
 
         return id;
     }
@@ -37,11 +41,16 @@ public class UserManagementService {
         if(userDb.findById(id) == null) {
             throw new ServiceRuntimeException(UserConstants.ERROR_USER_NOT_EXIST);
         }
+
         userDb.remove(id);
     }
 
     public User findUser(Long id) {
         return userDb.findById(id);
+    }
+
+    public User findUser(String principalName) {
+        return userDb.findByEmail(principalName);
     }
 
     public void updateUser(Long id, User updatedUserData) {
@@ -86,6 +95,15 @@ public class UserManagementService {
         } catch (Exception e) {
             LOGGER.error("Cannot persist user", e);
             throw new ServiceRuntimeException(UserConstants.ERROR_CREATE_USER_FAILURE);
+        }
+    }
+
+    private void validateRegistrationCode(String registrationCode) {
+        if (registrationCode == null || registrationCode.isEmpty()) {
+            throw new ServiceRuntimeException(UserConstants.ERROR_CREATE_USER_INVALID_REGISTRATION_CODE);
+        }
+        if (codesDb.findRegistrationCode(registrationCode) == null) {
+            throw new ServiceRuntimeException(UserConstants.ERROR_CREATE_USER_INVALID_REGISTRATION_CODE);
         }
     }
 

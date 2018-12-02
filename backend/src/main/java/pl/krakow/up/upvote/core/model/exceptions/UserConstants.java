@@ -16,7 +16,9 @@ public class UserConstants {
 
     public static final String ERROR_USER_VALIDATION_FAILURE = "ERROR_USER_VALIDATION_FAILURE";
 
+    public static final String ERROR_CREATE_USER_INVALID_REGISTRATION_CODE = "ERROR_CREATE_USER_INVALID_REGISTRATION_CODE";
     public static final String ERROR_CREATE_USER_FAILURE = "ERROR_CREATE_USER_FAILURE";
+
     public static final String ERROR_UPDATE_USER_FAILURE = "ERROR_UPDATE_USER_FAILURE";
 
 }

@@ -99,7 +99,7 @@ function dependencyHandlers() {
 
     if (!fs.existsSync(manifestPath)) {
       logger.error('The DLL manifest is missing. Please run `npm run build:dll`');
-      process.exit(0);
+      //process.exit(0);
     }
 
     return [

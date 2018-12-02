@@ -8,12 +8,17 @@
 
     <persistence-unit name="persistenceUnitName">
 
+        <class>pl.krakow.up.upvote.core.model.Role</class>
+        <class>pl.krakow.up.upvote.core.model.Operation</class>
         <class>pl.krakow.up.upvote.core.model.User</class>
+        <class>pl.krakow.up.upvote.core.model.RegistrationCode</class>
+        <class>pl.krakow.up.upvote.core.model.VotePoll</class>
+        <class>pl.krakow.up.upvote.core.model.VoteOption</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://192.168.0.248:5432/pgTest" /> <!-- BD Mane -->
-            <property name="javax.persistence.jdbc.user" value="postgres" /> <!-- DB User -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://91.189.1.45:5432/upVoteDb" /> <!-- BD Mane -->
+            <property name="javax.persistence.jdbc.user" value="dbadmin" /> <!-- DB User -->
             <property name="javax.persistence.jdbc.password" value="Zaq123edc" /> <!-- DB Password -->
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/> <!-- DB Dialect -->
