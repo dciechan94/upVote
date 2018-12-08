@@ -1,0 +1,18 @@
+version: '3'
+services:
+  postgres:
+    image: "vote-postgres:1"
+    container_name: "postgres"
+    environment:
+      POSTGRES_USER: "dbadmin"
+      POSTGRES_PASSWORD: "Zaq123edc"
+      PGPASSWORD: "Zaq123edc"
+      POSTGRES_DB: "upVoteDb"
+    build: 
+      context: ./postgres
+      dockerfile: Dockerfile
+    hostname: postgres
+    ports:
+      - "5432:5432"
+
+      
