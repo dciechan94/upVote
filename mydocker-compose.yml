@@ -14,10 +14,6 @@ services:
     hostname: postgres
     ports:
       - "5432:5432"
-  adminer:
-    image: adminer
-    ports:
-      - 8080:8080
   nginx:
     image: "vote-nginx:1"
     container_name: "nginx"
