@@ -1,22 +1,23 @@
+import { createSelector } from 'reselect';
+import { initialState } from './reducer';
+
 /**
- * BrowsePage selectors
+ * Direct selector to the createElectionPage state domain
  */
 
-import { createSelector } from 'reselect';
+const selectCreateElectionPageDomain = state =>
+  state.get('createElectionPage', initialState);
 
-const selectBrowse = (state) => state.get('browse');
+/**
+ * Other specific selectors
+ */
 
-const makeSelectOrganizationId = () => createSelector(
-  selectBrowse,
-  (browseState) => browseState.get('organizationId')
-);
+/**
+ * Default selector used by CreateElectionPage
+ */
 
-const makeSelectBrowseData = () => createSelector(
-  selectBrowse,
-  (browseState) => browseState.get('browseData')
-);
+const makeSelectCreateElectionPage = () =>
+  createSelector(selectCreateElectionPageDomain, substate => substate.toJS());
 
-export {
-  selectBrowse,
-  makeSelectBrowseData
-};
+export default makeSelectCreateElectionPage;
+export { selectCreateElectionPageDomain };

@@ -1,63 +1,34 @@
 /*
  * AppReducer
+ *
+ * The reducer takes care of our data. Using actions, we can change our
+ * application state.
+ * To add a new action, add it to the switch statement in the reducer function
+ *
+ * Example:
+ * case YOUR_ACTION_CONSTANT:
+ *   return state.set('yourStateVariable', true);
  */
 
 import { fromJS } from 'immutable';
-
-import {
-  LOAD_REPOS_SUCCESS,
-  LOAD_REPOS,
-  LOAD_REPOS_ERROR,
-  AUTHETICATION_ERROR
-} from './constants';
-
-import {
-  POST_LOGIN_SUCCESS
-} from '../LoginPage/constants'
+import { FATAL_ERROR_OCCURED } from './constants';
 
 // The initial state of the App
 const initialState = fromJS({
-  loading: false,
-  error: false,
-  currentUser: false,
-  userData: {
-    repositories: false,
-  },
-  isUserAuthenticated: false,
-  userFirstName: "",
-  userLastName: "",
-  userRoles: [],
-  userAuthToken: "",
+  currentUser: {
+    id: 2,
+    firstName: "BasicName",
+    lastName: "BasicLastname",
+    email: "basic@basic.com",
+    password: "1q2w3e"
+  }
 });
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
-    case LOAD_REPOS:
-      return state
-        .set('loading', true)
-        .set('error', false)
-        .setIn(['userData', 'repositories'], false);
-    case LOAD_REPOS_SUCCESS:
-      return state
-        .setIn(['userData', 'repositories'], action.repos)
-        .set('loading', false)
-        .set('currentUser', action.username);
-    case LOAD_REPOS_ERROR:
-      return state
-        .set('error', action.error)
-        .set('loading', false);
-    case AUTHETICATION_ERROR:
-      console.log("Session has been lost")
-      return state
-        .set('isUserAuthenticated', false)
-        .set('userFirstName', "")
-        .set('userLastName', "")
-        .set('userRoles', [])
-        .set('userAuthToken', "");
-    case POST_LOGIN_SUCCESS:
-      return state
-        .set('isUserAuthenticated', true)
-        .set('userFirstName', action.firstName)
+    case FATAL_ERROR_OCCURED:
+      console.log("Error occurred")
+      console.log(action.message)
     default:
       return state;
   }

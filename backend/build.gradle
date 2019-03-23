@@ -13,8 +13,9 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'application'
 
-version = '0.1'
+version = System.getenv('UPVOTE_VERSION_TAG') ?: "SNAPSHOT"
 group = 'pl.krakow.up.upvote'
+description = 'Uniwersytet Pedagogiczny Voting System - main project'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 

@@ -1,63 +1,53 @@
-/*
+/**
+ *
  * LoginPage
+ *
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-
-import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { Helmet } from 'react-helmet';
+import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
 
+import { Card } from "@blueprintjs/core";
+
+import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
 import { changeEmail, changePassword, postLogin } from './actions';
 import { makeSelectEmail, makeSelectPassword, makeSelectIsEmailValid, makeSelectIsPasswordValid, makeSelectSysFirstName } from './selectors'
-
-import injectReducer from 'utils/injectReducer';
-import injectSaga from 'utils/injectSaga';
 import reducer from './reducer';
 import saga from './saga';
+import messages from './messages';
 
 import LoginForm from 'components/LoginForm';
 
-const TagListWrapper2 = styled.div`
-  margin: auto;
-  width: 500px;
-`;
-
-
-export class LoginPage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
-  /**
-   * when initial state username is not null, submit the form to load repos
-   */
-  componentDidMount() {
-
-  }
-
+/* eslint-disable react/prefer-stateless-function */
+export class LoginPage extends React.PureComponent {
   render() {
     return (
-      <div>
+      <Card>
+      <Card style={{margin: "auto", width: 400}}>
         <Helmet>
           <title>Sign In</title>
-          <meta name="description" content="Authentication for upVote system" />
+          <meta name="description" content="Fill in the login form to enter the system." />
         </Helmet>
 
-        <TagListWrapper2>
         <LoginForm
           email={this.props.email}
           password={this.props.password}
-        
+
           isEmailValid={this.props.isEmailValid}
           isPasswordValid={this.props.isPasswordValid}
-        
+
           onChangeEmail={this.props.onChangeEmail}
           onChangePassword={this.props.onChangePassword}
           onPostLogin={this.props.onPostLogin}
         />
-</TagListWrapper2>
-
-      </div>
+      </Card>
+      </Card>
     );
   }
 }
@@ -74,14 +64,6 @@ LoginPage.propTypes = {
   onPostLogin: PropTypes.func,
 };
 
-export function mapDispatchToProps(dispatch) {
-  return {
-    onChangeEmail: (evt) => dispatch(changeEmail(evt.target.value)),
-    onChangePassword: (evt) => dispatch(changePassword(evt.target.value)),
-    onPostLogin: () => dispatch(postLogin()),
-  };
-}
-
 const mapStateToProps = createStructuredSelector({
   email: makeSelectEmail(),
   password: makeSelectPassword(),
@@ -92,10 +74,21 @@ const mapStateToProps = createStructuredSelector({
   sysFirstName: makeSelectSysFirstName(),
 });
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+function mapDispatchToProps(dispatch) {
+  return {
+    onChangeEmail: (evt) => dispatch(changeEmail(evt.target.value)),
+    onChangePassword: (evt) => dispatch(changePassword(evt.target.value)),
+    onPostLogin: () => dispatch(postLogin()),
+  };
+}
 
-const withReducer = injectReducer({ key: 'login', reducer });
-const withSaga = injectSaga({ key: 'login', saga });
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'loginPage', reducer });
+const withSaga = injectSaga({ key: 'loginPage', saga });
 
 export default compose(
   withReducer,

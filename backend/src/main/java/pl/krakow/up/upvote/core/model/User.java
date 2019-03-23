@@ -16,7 +16,7 @@ import java.util.List;
 public class User implements Persistable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     @NotNull(message = UserConstants.ERROR_USER_USERNAME_NULL)
@@ -51,15 +51,47 @@ public class User implements Persistable {
     )
     protected String lastName;
 
-    @ManyToMany
+
+    @ManyToMany(targetEntity = Role.class)
     @JoinTable(name = "EV_users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false, updatable = false)
     )
     protected final List<Role> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy= "userReference", fetch = FetchType.LAZY)
+    protected final List<Voteable> referencedInVoteables = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "invitedVoters", fetch = FetchType.LAZY)
+    protected final List<VotePoll> invitedToVotepolls = new ArrayList<>();
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    protected final List<VotePoll> createdVotePolls = new ArrayList<>();
+
+    @OneToMany(mappedBy = "voter", fetch = FetchType.LAZY)
+    protected final List<Vote> madeVotes = new ArrayList<>();
+
 
     public User() {
+    }
+
+    @PreRemove
+    private void preRemoveAction() {
+        for(Role role : roles) {
+            role.getUsers().remove(this);
+        }
+        for(Voteable voteable : referencedInVoteables) {
+            voteable.setUserReference(null);
+        }
+        for(VotePoll votePoll : createdVotePolls) {
+            votePoll.setCreatedBy(null);
+        }
+        for(VotePoll votePoll : invitedToVotepolls) {
+            votePoll.getInvitedVoters().remove(this);
+        }
+        for(Vote vote : madeVotes) {
+            vote.setVoter(null);
+        }
     }
 
     public Long getId() { // Optional but useful
@@ -108,6 +140,22 @@ public class User implements Persistable {
 
     public List<Role> getRoles() {
         return roles;
+    }
+
+    public List<Voteable> getReferencedInVoteables() {
+        return referencedInVoteables;
+    }
+
+    public List<VotePoll> getInvitedToVotepolls() {
+        return invitedToVotepolls;
+    }
+
+    public List<VotePoll> getCreatedVotePolls() {
+        return createdVotePolls;
+    }
+
+    public List<Vote> getMadeVotes() {
+        return madeVotes;
     }
 
     @Override

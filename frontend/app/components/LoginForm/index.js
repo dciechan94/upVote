@@ -1,57 +1,73 @@
 import React from 'react';
+import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
-import styled from 'styled-components';
 
-import { Tile, TextInput, Button, Modal } from 'carbon-components-react';
+import {
+  Button,
+  FormGroup,
+  InputGroup,
+  Intent,
+  Text,
+  Tooltip,
+} from "@blueprintjs/core";
 
-const TagListWrapper = styled.div`
-  padding-bottom: 1rem;
-`;
+import messages from './messages';
 
-class LoginForm extends React.Component {
-
+/* eslint-disable react/prefer-stateless-function */
+class LoginForm extends React.PureComponent {
   render() {
-
     const {formatMessage} = this.props.intl;
+    const lockButton = (
+      <Tooltip content={`${true ? "Hide" : "Show"} Password`}>
+          <Button
+              icon={false ? "unlock" : "lock"}
+              intent={Intent.WARNING}
+              minimal={true}
+              onClick={()=>{}}
+          />
+      </Tooltip>
+    );
 
     return (
-      <Tile>
-
-        <TagListWrapper>
-          <TextInput
-            id="test3"
-            labelText={formatMessage({id:"upvote.components.LoginForm.email"})}
-            required
-            hideLabel={false}
-            light={false}
-  
-            value={this.props.email}
-            onChange={this.props.onChangeEmail}
+      <div>
+        <FormGroup
+          label={formatMessage(messages.email)}
+          labelFor="text-input"
+        >
+          <InputGroup
+            id="text-input"
+            placeholder="Enter your email..."
+            intent={Intent.NONE}
           />
-        </TagListWrapper>
+        </FormGroup>
 
-        <TagListWrapper>
-          <TextInput
-            id="password"
-            labelText={formatMessage({id:"upvote.components.LoginForm.password"})}
+        <FormGroup
+          label={formatMessage(messages.password)}
+          labelFor="password-input"
+        >
+          <InputGroup
+            id="password-input"
+            placeholder="Enter your password..."
+            rightElement={lockButton}
             type="password"
-            hideLabel={false}
-            light={false}
-            
-            value={this.props.password}  
             onChange={this.props.onChangePassword}
           />
-        </TagListWrapper>
+        </FormGroup>
+        <Text style={{align: "right"}}>
+          {formatMessage(messages.createAccount)}
+        </Text>
 
-        <TagListWrapper>
-          <Button onClick={this.props.onPostLogin} onFocus={()=>{}}>
-            {formatMessage({id:"upvote.components.LoginForm.loginButtonText"})}
-          </Button>
-        </TagListWrapper>
-      </Tile>
+        <Button text={formatMessage(messages.loginButtonText)} onClick={this.props.onPostLogin} />
+      </div>
     );
   }
-
 }
 
-export default injectIntl(LoginForm);
+LoginForm.propTypes = {};
+
+export default compose(
+  injectIntl,
+)(LoginForm);
+
+
+

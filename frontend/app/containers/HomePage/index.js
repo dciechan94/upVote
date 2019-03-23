@@ -11,11 +11,16 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Button } from 'carbon-components-react';
+
+import { Button } from "@blueprintjs/core";
 
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
-import { makeSelectRepos, makeSelectLoading, makeSelectError } from 'containers/App/selectors';
+import {
+  makeSelectRepos,
+  makeSelectLoading,
+  makeSelectError,
+} from 'containers/App/selectors';
 import H2 from 'components/H2';
 import ReposList from 'components/ReposList';
 import AtPrefix from './AtPrefix';
@@ -24,13 +29,14 @@ import Form from './Form';
 import Input from './Input';
 import Section from './Section';
 import messages from './messages';
-import { loadRepos, loadBaseData } from '../App/actions';
+import { loadRepos } from '../App/actions';
 import { changeUsername } from './actions';
-import { makeSelectUsername, makeSelectFirstName2 } from './selectors';
+import { makeSelectUsername } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 
-export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+/* eslint-disable react/prefer-stateless-function */
+export class HomePage extends React.PureComponent {
   /**
    * when initial state username is not null, submit the form to load repos
    */
@@ -38,7 +44,6 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     if (this.props.username && this.props.username.trim().length > 0) {
       this.props.onSubmitForm();
     }
-	this.props.onInitFirstName();
   }
 
   render() {
@@ -53,10 +58,14 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
       <article>
         <Helmet>
           <title>Home Page</title>
-          <meta name="description" content="A React.js Boilerplate application homepage" />
+          <meta
+            name="description"
+            content="A React.js Boilerplate application homepage"
+          />
         </Helmet>
         <div>
           <CenteredSection>
+		    <Button icon="refresh" text="Reset tags" onClick={()=>{}} />
             <H2>
               <FormattedMessage {...messages.startProjectHeader} />
             </H2>
@@ -64,9 +73,6 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
               <FormattedMessage {...messages.startProjectMessage} />
             </p>
           </CenteredSection>
-		  <Button onClick={this.props.onChangeUsername} onFocus={this.props.onChangeUsername} className="bx--btn--primary">
-			  xx{this.props.firstNameUI}yy
-		  </Button>
           <Section>
             <H2>
               <FormattedMessage {...messages.trymeHeader} />
@@ -96,40 +102,34 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
 HomePage.propTypes = {
   loading: PropTypes.bool,
-  error: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.bool,
-  ]),
-  repos: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.bool,
-  ]),
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  repos: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   onSubmitForm: PropTypes.func,
   username: PropTypes.string,
-  firstNameUI: PropTypes.object,
   onChangeUsername: PropTypes.func,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onChangeUsername: (evt) => dispatch(changeUsername(evt.target.value)),
-    onSubmitForm: (evt) => {
+    onChangeUsername: evt => dispatch(changeUsername(evt.target.value)),
+    onSubmitForm: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(loadRepos());
     },
-	onInitFirstName: (evt) => dispatch(loadBaseData()),
   };
 }
 
 const mapStateToProps = createStructuredSelector({
   repos: makeSelectRepos(),
   username: makeSelectUsername(),
-  firstNameUI: makeSelectFirstName2(),
   loading: makeSelectLoading(),
   error: makeSelectError(),
 });
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
 
 const withReducer = injectReducer({ key: 'home', reducer });
 const withSaga = injectSaga({ key: 'home', saga });

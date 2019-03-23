@@ -9,11 +9,11 @@
     <persistence-unit name="persistenceUnitName">
 
         <class>pl.krakow.up.upvote.core.model.Role</class>
-        <class>pl.krakow.up.upvote.core.model.Operation</class>
         <class>pl.krakow.up.upvote.core.model.User</class>
         <class>pl.krakow.up.upvote.core.model.RegistrationCode</class>
         <class>pl.krakow.up.upvote.core.model.VotePoll</class>
-        <class>pl.krakow.up.upvote.core.model.VoteOption</class>
+        <class>pl.krakow.up.upvote.core.model.Voteable</class>
+        <class>pl.krakow.up.upvote.core.model.Vote</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
@@ -22,11 +22,13 @@
             <property name="javax.persistence.jdbc.password" value="Zaq123edc" /> <!-- DB Password -->
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/> <!-- DB Dialect -->
-            <property name="hibernate.hbm2ddl.auto" value="create" /> <!-- create / create-drop / update -->
             <property name="hibernate.archive.autodetection" value="class, hbm"/>
 
             <property name="hibernate.show_sql" value="true" /> <!-- Show SQL in console -->
             <property name="hibernate.format_sql" value="true" /> <!-- Show SQL formatted -->
+
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+
 
         </properties>
 

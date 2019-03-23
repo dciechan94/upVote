@@ -5,9 +5,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import pl.krakow.up.upvote.core.model.dao.*;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -16,36 +16,34 @@ import javax.persistence.Persistence;
 public class ModelDAOConfiguration {
     private static final Logger LOGGER = LogManager.getLogger(ModelDAOConfiguration.class);
 
+//    @Bean
+//    @RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+//    public EntityManager entityManager() {
+//        LOGGER.info("Creating 'entityManager' bean");
+//        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory( "persistenceUnitName" );
+//        return entityManagerFactory.createEntityManager();
+//    }
+
     @Bean
-    public EntityManager entityManager() {
-        LOGGER.info("Creating 'entityManager' bean");
+    public EntityManagerFactory entityManagerFactory() {
+        LOGGER.info("Creating 'entityManagerFactory' bean");
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory( "persistenceUnitName" );
-        return entityManagerFactory.createEntityManager();
+        return entityManagerFactory;
     }
 
     @Bean
-    public OperationDAO operationDAO() {
-        LOGGER.info("Creating 'operationDAO' bean");
-        return new OperationDAOImpl();
-    }
-
-    @Bean
+    @DependsOn("entityManagerFactory")
     public RoleDAO roleDAO() {
         LOGGER.info("Create 'roleDAO' bean");
         return new RoleDAOImpl();
     }
 
     @Bean
+    @DependsOn("entityManagerFactory")
     public UserDAO userDAO() {
         LOGGER.info("Creating 'userDAO' bean");
         return new UserDAOImpl();
     }
-
-//    @Bean
-//    public UserDAOImpl userDAOImpl() {
-//        LOGGER.info("Creating 'userDAOImpl' bean");
-//        return new UserDAOImpl();
-//    }
 
     @Bean
     public RegistrationCodeDAO registrationCodeDAO() {
@@ -57,6 +55,12 @@ public class ModelDAOConfiguration {
     public VotePollDAO votePollDAO() {
         LOGGER.info("Creating 'votePollDAO' bean");
         return new VotePollDAOImpl();
+    }
+
+    @Bean
+    public VoteDAO voteDAO() {
+        LOGGER.info("Creating 'voteDAO' bean");
+        return new VoteDAOImpl();
     }
 
 }

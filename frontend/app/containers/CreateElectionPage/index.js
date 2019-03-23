@@ -1,77 +1,66 @@
-/*
+/**
+ *
  * CreateElectionPage
+ *
  */
+
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-
-import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { Helmet } from 'react-helmet';
+import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
-import { Tile, TextInput, TextArea, Form, Button, DatePickerInput, TimePicker } from 'carbon-components-react';
+import { compose } from 'redux';
 
-
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
+import makeSelectCreateElectionPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import messages from './messages';
 
-import CreateElectionForm from 'components/CreateElectionForm';
-
-const TagListWrapper2 = styled.div`
-  width: 500px;
-`;
-
-
-export class CreateElectionPage extends React.Component {
-
-  componentDidMount() {
-    //this.props.changeOrganizationId(this.props.match.params.id);
-    //this.props.loadBasicDataForComponent();
-  }
-
+/* eslint-disable react/prefer-stateless-function */
+export class CreateElectionPage extends React.PureComponent {
   render() {
     return (
       <div>
         <Helmet>
-          <title>Create Election Page</title>
-          <meta name="description" content="Create Election Page description" />
+          <title>CreateElectionPage</title>
+          <meta
+            name="description"
+            content="Description of CreateElectionPage"
+          />
         </Helmet>
-
-
-<TagListWrapper2>
-        <CreateElectionForm/>
-</TagListWrapper2>
+        <FormattedMessage {...messages.header} />
       </div>
     );
   }
 }
 
 CreateElectionPage.propTypes = {
-  browseData: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+const mapStateToProps = createStructuredSelector({
+  createElectionPage: makeSelectCreateElectionPage(),
+});
+
+function mapDispatchToProps(dispatch) {
   return {
-    // changeOrganizationId: (id) => dispatch(initChangeOrganizationId(id)),
-    // loadBasicDataForComponent: (organizationId) => dispatch(initBaseDataLoad(organizationId)),
-    // loadDetailDataForComponent: (organizationId) => dispatch(initDetailDataLoad(organizationId)),
+    dispatch,
   };
 }
 
-const mapStateToProps = createStructuredSelector({
-});
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-const withReducer = injectReducer({ key: 'createElection', reducer });
-const withSaga = injectSaga({ key: 'createElection', saga });
-
+const withReducer = injectReducer({ key: 'createElectionPage', reducer });
+const withSaga = injectSaga({ key: 'createElectionPage', saga });
 
 export default compose(
   withReducer,
   withSaga,
   withConnect,
 )(CreateElectionPage);
-

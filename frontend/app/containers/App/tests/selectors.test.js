@@ -76,12 +76,11 @@ describe('makeSelectRepos', () => {
 describe('makeSelectLocation', () => {
   const locationStateSelector = makeSelectLocation();
   it('should select the location', () => {
-    const route = fromJS({
-      location: { pathname: '/foo' },
-    });
     const mockedState = fromJS({
-      route,
+      router: { location: { pathname: '/foo' } },
     });
-    expect(locationStateSelector(mockedState)).toEqual(route.get('location').toJS());
+    expect(locationStateSelector(mockedState)).toEqual(
+      mockedState.getIn(['router', 'location']).toJS(),
+    );
   });
 });

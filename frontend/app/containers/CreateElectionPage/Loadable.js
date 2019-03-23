@@ -1,11 +1,9 @@
 /**
- * Asynchronously loads the component for BrowsePage
+ *
+ * Asynchronously loads the component for CreateElectionPage
+ *
  */
-import Loadable from 'react-loadable';
 
-import LoadingIndicator from 'components/LoadingIndicator';
+import loadable from 'loadable-components';
 
-export default Loadable({
-  loader: () => import('./index'),
-  loading: LoadingIndicator,
-});
+export default loadable(() => import('./index'));

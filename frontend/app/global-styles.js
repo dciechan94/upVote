@@ -1,7 +1,6 @@
-import { injectGlobal } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
-/* eslint no-unused-expressions: 0 */
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   html,
   body {
     height: 100%;
@@ -22,9 +21,10 @@ injectGlobal`
     min-width: 100%;
   }
 
-  p,
-  label {
+  p {
     font-family: Georgia, Times, 'Times New Roman', serif;
     line-height: 1.5em;
   }
 `;
+
+export default GlobalStyle;

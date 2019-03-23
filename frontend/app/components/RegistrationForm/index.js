@@ -1,146 +1,151 @@
+/**
+ *
+ * RegistrationForm
+ *
+ */
+
 import React from 'react';
+import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
-import styled from 'styled-components';
+// import PropTypes from 'prop-types';
+// import styled from 'styled-components';
+import {
+  Alignment,
+  Button,
+  Checkbox,
+  Classes,
+  Dialog,
+  FormGroup,
+  InputGroup,
+  Intent,
+  Tooltip,
+} from "@blueprintjs/core";
 
-import { Tile, TextInput, Button, Modal } from 'carbon-components-react';
+import messages from './messages';
 
-const TagListWrapper = styled.div`
-  padding-bottom: 1rem;
-`;
-
-class RegistrationForm extends React.Component {
-
+/* eslint-disable react/prefer-stateless-function */
+class RegistrationForm extends React.PureComponent {
   render() {
-
     const {formatMessage} = this.props.intl;
+    const lockButton = (
+      <Tooltip content={`${true ? "Hide" : "Show"} Password`}>
+          <Button
+              icon={false ? "unlock" : "lock"}
+              intent={Intent.WARNING}
+              minimal={true}
+              onClick={()=>{}}
+          />
+      </Tooltip>
+    );
 
     return (
-      <Tile>
-        <TagListWrapper>
-          <TextInput
-            id="test2"
-            labelText={formatMessage({id:"upvote.components.RegistrationForm.registrationCode"})}
-            required
-            hideLabel={false}
-            light={false}
-            
-            invalid={!this.props.isRegistrationCodeValid}
-            invalidText="A valid value is required"
-            value={this.props.registrationCode}
-            
+      <div>
+        <FormGroup
+          label={formatMessage(messages.registrationCode)}
+          labelFor="registrationCode-input"
+          labelInfo="(required)"
+        >
+          <InputGroup
+            id="registrationCode-input"
+            intent={this.props.isRegistrationCodeValid ? Intent.NONE : Intent.WARNING}
             onChange={this.props.onChangeRegistrationCode}
           />
-        </TagListWrapper>
-      
-        <TagListWrapper>
-          <TextInput
-            id="test3"
-            labelText={formatMessage({id:"upvote.components.RegistrationForm.email"})}
-            required
-            hideLabel={false}
-            light={false}
-  
-            invalid={!this.props.isEmailValid}
-            invalidText="A valid value is required"
-            value={this.props.email}
-  
+        </FormGroup>
+
+        <FormGroup
+          label={formatMessage(messages.email)}
+          labelFor="email-input"
+          labelInfo="(required)"
+        >
+          <InputGroup
+            id="email-input"
+            intent={this.props.isEmailValid ? Intent.NONE : Intent.WARNING}
             onChange={this.props.onChangeEmail}
           />
-        </TagListWrapper>
-      
-        <TagListWrapper>
-          <TextInput
-            id="test4"
-            labelText={formatMessage({id:"upvote.components.RegistrationForm.firstName"})}
-            required
-            hideLabel={false}
-            light={false}
-            
-            invalid={!this.props.isFirstNameValid}
-            invalidText="A valid value is required"
-            value={this.props.firstName}
-            
+        </FormGroup>
+
+        <FormGroup
+          label={formatMessage(messages.firstName)}
+          labelFor="firstName-input"
+        >
+          <InputGroup
+            id="firstName-input"
+            intent={this.props.isFirstNameValid ? Intent.NONE : Intent.WARNING}
             onChange={this.props.onChangeFirstName}
           />
-        </TagListWrapper>
-      
-        <TagListWrapper>
-          <TextInput
-            id="test5"
-            labelText={formatMessage({id:"upvote.components.RegistrationForm.lastName"})}
-            required
-            hideLabel={false}
-            light={false}
-            
-            invalid={!this.props.isLastNameValid}
-            invalidText="A valid value is required"
-            value={this.props.lastName}
-            
+        </FormGroup>
+
+        <FormGroup
+          label={formatMessage(messages.lastName)}
+          labelFor="lastName-input"
+        >
+          <InputGroup
+            id="lastName-input"
+            intent={this.props.isLastNameValid ? Intent.NONE : Intent.WARNING}
             onChange={this.props.onChangeLastName}
           />
-        </TagListWrapper>
-      
-        <TagListWrapper>
-          <TextInput
-            id="password"
-            labelText={formatMessage({id:"upvote.components.RegistrationForm.password"})}
-            required
+        </FormGroup>
+
+        <FormGroup
+          label={formatMessage(messages.password)}
+          labelFor="password-input"
+          labelInfo="(required)"
+        >
+          <InputGroup
+            id="password-input"
+            rightElement={lockButton}
             type="password"
-            hideLabel={false}
-            light={false}
-            
-            invalid={!this.props.isPasswordValid}
-            invalidText="Your password must be at least 6 characters as well as contain at least one uppercase, one lowercase, and one number."
-            value={this.props.password}
-            
+            intent={this.props.isPasswordValid ? Intent.NONE : Intent.WARNING}
             onChange={this.props.onChangePassword}
           />
-        </TagListWrapper>
-      
-        <TagListWrapper>
-          <TextInput
-            id="password6"
-            labelText={formatMessage({id:"upvote.components.RegistrationForm.passwordRepeat"})}
-            required
+        </FormGroup>
+
+        <FormGroup
+          label={formatMessage(messages.passwordRepeat)}
+          labelFor="passwordRepeat-input"
+          labelInfo="(required)"
+        >
+          <InputGroup
+            id="passwordRepeat-input"
+            rightElement={lockButton}
             type="password"
-            hideLabel={false}
-            light={false}
-            
-            invalid={!this.props.isPasswordRepeatValid}
-            invalidText="Your password must be at least 6 characters as well as contain at least one uppercase, one lowercase, and one number."
-            value={this.props.passwordRepeat}
-            
+            intent={this.props.isPasswordRepeatValid ? Intent.NONE : Intent.WARNING}
             onChange={this.props.onChangePasswordRepeat}
           />
-        </TagListWrapper>
-      
-        <TagListWrapper>
-          <Button  onClick={this.props.onCreateNewUser} onFocus={()=>{}}>
-            {formatMessage({id:"upvote.components.RegistrationForm.registerButtonText"})}
-          </Button>
-        </TagListWrapper>
+        </FormGroup>
 
-        <Modal
-          open={this.props.showRegistrationResultModal}
-          danger={this.props.isRegistrationResultError}
-          modalHeading={formatMessage({id: "upvote.components.RegistrationForm.modalHeading"})}
-          modalLabel={formatMessage({id: "upvote.components.RegistrationForm.modalLabel"})}
-          primaryButtonText={formatMessage({id: "BUTTON_LABEL_OK"})}
-          secondaryButtonText={formatMessage({id: "BUTTON_LABEL_CANCEL"})}
-          onRequestClose={this.props.onCloseRegistrationResultModal}
-          onRequestSubmit={this.props.onCloseRegistrationResultModal}
-          onSecondarySubmit={this.props.onCloseRegistrationResultModal}>
-        
-          {this.props.registrationResultMessage.map(message => 
-            <p key="1" className="bx--modal-content__text">
-              {formatMessage({id: message})}
-            </p> 
-          )}
-        </Modal>
-      </Tile>
+
+        <Checkbox alignIndicator={Alignment.LEFT} label="I agree and accept the Terms of Service." />
+
+        <Button text={formatMessage(messages.registerButtonText)} onClick={this.props.onCreateNewUser} />
+
+        <Dialog
+          icon={this.props.isRegistrationResultError ? "issue" : "info-sign" }
+          onClose={this.props.onCloseRegistrationResultModal}
+          title={this.props.isRegistrationResultError ? "Verify your data" : "Registration completed"}
+          isOpen={this.props.showRegistrationResultModal}
+        >
+          <div className={Classes.DIALOG_BODY}>
+              <p>
+                  <strong>
+                      You have successfully created a new account. You can now Sign In.
+                  </strong>
+              </p>
+          </div>
+          <div className={Classes.DIALOG_FOOTER}>
+              <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                <Button onClick={this.props.onCloseRegistrationResultModal}>OK</Button>
+              </div>
+          </div>
+        </Dialog>
+
+      </div>
     );
   }
-
 }
 
-export default injectIntl(RegistrationForm);
+RegistrationForm.propTypes = {};
+
+export default compose(
+  injectIntl,
+)(RegistrationForm);

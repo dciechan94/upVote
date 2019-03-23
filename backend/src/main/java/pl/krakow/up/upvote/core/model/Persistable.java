@@ -1,5 +1,7 @@
 package pl.krakow.up.upvote.core.model;
 
-public interface Persistable {
+import java.io.Serializable;
+
+public interface Persistable extends Serializable {
     Long getId();
 }

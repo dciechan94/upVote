@@ -21,14 +21,18 @@ describe('<Toggle />', () => {
     const renderedComponent = shallow(
       <IntlProvider locale="en">
         <Toggle values={['en', 'de']} messages={messages} />
-      </IntlProvider>
+      </IntlProvider>,
     );
-    expect(renderedComponent.contains(<Toggle values={['en', 'de']} messages={messages} />)).toBe(true);
-    expect(renderedComponent.find('option').length).toBe(0);
+    expect(
+      renderedComponent.contains(
+        <Toggle values={['en', 'de']} messages={messages} />,
+      ),
+    ).toBe(true);
+    expect(renderedComponent.find('option')).toHaveLength(0);
   });
   it('should not have ToggleOptions if props.values is not defined', () => {
     const renderedComponent = shallow(<Toggle />);
     expect(renderedComponent.contains(<option>--</option>)).toBe(true);
-    expect(renderedComponent.find('option').length).toBe(1);
+    expect(renderedComponent.find('option')).toHaveLength(1);
   });
 });

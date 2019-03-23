@@ -1,4 +1,13 @@
 {
+  "app.components.LoginForm.createAccount": "Create account",
+  "app.components.LoginForm.email": "Email",
+  "app.components.LoginForm.loginButtonText": "Enter",
+  "app.components.LoginForm.password": "Password",
+  "app.containers.BrowseElectionPage.header": "This is the BrowseElectionPage container!",
+  "app.containers.CreateElectionPage.header": "This is the CreateElectionPage container!",
+  "app.containers.LoginPage.header": "This is the LoginPage container!",
+  "app.containers.MenuBar.header": "This is the MenuBar container!",
+  "app.containers.RegisterPage.header": "This is the RegisterPage container!",
   "boilerplate.components.Footer.author.message": "Made with love by {author}.",
   "boilerplate.components.Footer.license.message": "This project is licensed under the MIT license.",
   "boilerplate.components.Header.features": "Features",
@@ -27,76 +36,5 @@
   "boilerplate.containers.HomePage.tryme.message": "Show Github repositories by",
   "boilerplate.containers.LocaleToggle.de": "de",
   "boilerplate.containers.LocaleToggle.en": "en",
-  "boilerplate.containers.NotFoundPage.header": "Page not found.",
-
-  "upvote.components.FixedLeftNavBar.signin": "Sign In",
-  "upvote.components.FixedLeftNavBar.signup": "Sign Up",
-  "upvote.components.FixedLeftNavBar.signout": "Sign Out",
-
-  "upvote.components.FixedLeftNavBar.elections": "Elections",
-  "upvote.components.FixedLeftNavBar.elections.browse": "Browse",
-  "upvote.components.FixedLeftNavBar.elections.create": "Create",
-
-  "upvote.components.FixedLeftNavBar.administration": "Administration",
-  "upvote.components.FixedLeftNavBar.administration.users": "Users",
-
-  "upvote.components.FixedLeftNavBar.settings": "Settings",
-  "upvote.components.FixedLeftNavBar.settings.profile.export": "Data export",
-  "upvote.components.FixedLeftNavBar.settings.profile.edit": "Edit profile",
-  "upvote.components.FixedLeftNavBar.settings.profile.changePassword": "Change password",
-  "upvote.components.FixedLeftNavBar.settings.profile.delete": "Delete account",
-  
-  "upvote.components.FixedLeftNavBar.archive": "Archive",
-
-  "upvote.components.FixedLeftNavBar.privacy": "Privacy policy",
-
-  "upvote.components.RegistrationForm.registrationCode": "Registration code",
-  "upvote.components.RegistrationForm.email": "Email",
-  "upvote.components.RegistrationForm.firstName": "First name",
-  "upvote.components.RegistrationForm.lastName": "Last name",
-  "upvote.components.RegistrationForm.password": "Password",
-  "upvote.components.RegistrationForm.passwordRepeat": "Repeat password",
-  "upvote.components.RegistrationForm.registerButtonText": "Register",
-
-  "upvote.components.RegistrationForm.modalLabel": "Message",
-  "upvote.components.RegistrationForm.modalHeading": "Sign up",
-
-  "upvote.components.LoginForm.email": "Email",
-  "upvote.components.LoginForm.password": "Password",
-  "upvote.components.LoginForm.loginButtonText": "Sign In",
-
-
-  "upvote.components.ElectionCreateForm.name": "Title",
-  "upvote.components.ElectionCreateForm.longDescription": "Description",
-  "upvote.components.ElectionCreateForm.publishDate": "Publish on",
-  "upvote.components.ElectionCreateForm.startVotingDate": "Start voting on",
-  "upvote.components.ElectionCreateForm.finishVotingDate": "Stop voting on",
-  "upvote.components.ElectionCreateForm.resultsPublishDate": "Results publish on",
-
-  "upvote.components.ElectionCreateForm.createButtonText": "Create",
-
-
-  "BUTTON_LABEL_OK": "OK",
-  "BUTTON_LABEL_CANCEL": "Cancel",
-
-  "MESSAGE_CREATE_USER_SUCCESS": "User created successfully.",
-
-  "ERROR_USER_USERNAME_NULL": "Enter username.",
-  "ERROR_USER_USERNAME_INVALID_LENGTH": "Invalid username length.",
-  "ERROR_USER_EMAIL_NULL": "Enter email.",
-  "ERROR_USER_EMAIL_INVALID_FORMAT": "Email has invalid format.",
-  "ERROR_USER_EMAIL_ALREADY_EXISTS": "User with this email already exists.",
-  "ERROR_USER_PASSWORD_HASH_NULL": "Enter password.",
-  "ERROR_USER_FIRST_NAME_NULL": "Fill first name.",
-  "ERROR_USER_FIRST_NAME_INVALID_LENGTH": "Invalid first name length.",
-  "ERROR_USER_LAST_NAME_NULL": "Fill last name.",
-  "ERROR_USER_LAST_NAME_INVALID_LENGTH": "Invalid last name length.",
-  "ERROR_USER_NOT_EXIST": "User does not exist",
-
-  "ERROR_USER_VALIDATION_FAILURE": "User data validation failed.",
-
-  "ERROR_CREATE_USER_INVALID_REGISTRATION_CODE": "Invalid registration code.",
-  "ERROR_CREATE_USER_FAILURE": "User registration failed.",
-
-  "ERROR_UPDATE_USER_FAILURE": "User data update failed."
+  "boilerplate.containers.NotFoundPage.header": "Page not found."
 }

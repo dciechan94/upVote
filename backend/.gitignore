@@ -5,12 +5,6 @@
 logs/
 *.log
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
 # Package Files #
 *.jar
 *.war
@@ -19,16 +13,18 @@ logs/
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
+# IntelliJ
 *.iml
 
+# Metadata
 .gradle/
 .idea/
+
+# Semi-products
 gradle/
 build/
 out/
 
+# Configuration files
 src/main/resources/application.properties
 src/main/resources/log4j2.xml

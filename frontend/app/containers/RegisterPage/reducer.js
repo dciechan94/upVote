@@ -1,5 +1,10 @@
-import { fromJS } from 'immutable';
+/*
+ *
+ * RegisterPage reducer
+ *
+ */
 
+import { fromJS } from 'immutable';
 import {
   CHANGE_REGISTRATION_CODE,
   CHANGE_EMAIL,
@@ -13,14 +18,12 @@ import {
   CLOSE_REGISTRATION_RESULT_MODAL,
 } from './constants';
 
-
-// The initial state of the App
-const initialState = fromJS({
+export const initialState = fromJS({
   registrationCode: "",
   email: "",
   firstName: "",
   lastName: "",
-  password: "", 
+  password: "",
   passwordRepeat: "",
 
   isRegistrationCodeValid: true,
@@ -33,10 +36,9 @@ const initialState = fromJS({
   showRegistrationResultModal: false,
   isRegistrationResultError: true,
   registrationResultMessage: [],
-
 });
 
-function homeReducer(state = initialState, action) {
+function registerPageReducer(state = initialState, action) {
   switch (action.type) {
     case CHANGE_REGISTRATION_CODE:
       var formatedCode = action.registrationCode.replace(/@/gi, '');
@@ -45,9 +47,10 @@ function homeReducer(state = initialState, action) {
         .set('isRegistrationCodeValid', formatedCode.length > 0);
 
     case CHANGE_EMAIL:
+      var emailRegexp = RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
       return state
         .set('email', action.email)
-        .set('isEmailValid', action.email.match("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"));
+        .set('isEmailValid', emailRegexp.test(action.email));
 
     case CHANGE_FIRST_NAME:
       return state
@@ -88,7 +91,7 @@ function homeReducer(state = initialState, action) {
         .set('showRegistrationResultModal', true)
         .set('isRegistrationResultError', true)
         .set('registrationResultMessage', fromJS(action.jsonData.details))
-    
+
     case CLOSE_REGISTRATION_RESULT_MODAL:
       return state
         .set('showRegistrationResultModal', false)
@@ -99,4 +102,4 @@ function homeReducer(state = initialState, action) {
   }
 }
 
-export default homeReducer;
+export default registerPageReducer;

@@ -1,44 +1,53 @@
+import { createSelector } from 'reselect';
+import { initialState } from './reducer';
+
 /**
- * Homepage selectors
+ * Direct selector to the loginPage state domain
  */
 
-import { createSelector } from 'reselect';
+const selectLoginPageDomain = state => state.get('loginPage', initialState);
 
-const selectLogin = (state) => state.get('login');
-
-
+/**
+ * Other specific selectors
+ */
 const makeSelectEmail = () => createSelector(
-  selectLogin,
+  selectLoginPageDomain,
   (loginState) => loginState.get('email')
 );
 const makeSelectPassword = () => createSelector(
-  selectLogin,
+  selectLoginPageDomain,
   (loginState) => loginState.get('password')
 );
 
 
 const makeSelectIsEmailValid = () => createSelector(
-  selectLogin,
+  selectLoginPageDomain,
   (loginState) => loginState.get('isEmailValid')
 );
 const makeSelectIsPasswordValid = () => createSelector(
-  selectLogin,
+  selectLoginPageDomain,
   (loginState) => loginState.get('isPasswordValid')
 );
 
 const makeSelectSysFirstName = () => createSelector(
-  selectLogin,
+  selectLoginPageDomain,
   (loginState) => loginState.get('sysFirstName')
 );
 
+/**
+ * Default selector used by LoginPage
+ */
 
-export {
-  selectLogin,
+const makeSelectLoginPage = () =>
+  createSelector(selectLoginPageDomain, substate => substate.toJS());
+
+export default makeSelectLoginPage;
+export { 
+  selectLoginPageDomain,
   makeSelectEmail,
   makeSelectPassword,
 
   makeSelectIsEmailValid,
   makeSelectIsPasswordValid,
 
-  makeSelectSysFirstName,
-};
+  makeSelectSysFirstName, };

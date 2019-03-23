@@ -1,7 +1,11 @@
 package pl.krakow.up.upvote.rest.v1.model.dto;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+import java.util.Map;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VotePollDTO {
 
     private Long id;
@@ -9,13 +13,19 @@ public class VotePollDTO {
     private String shortDescription;
     private String longDescription;
 
-    private Long creationDate;
-    private List<VoteOptionDTO> options;
+    private UserDTO createdBy;
 
-    private Long publishDate;
-    private Long startVotingDate;
-    private Long finishVotingDate;
-    private Long resultDate;
+    private List<VoteableDTO> votables;
+    private List<UserDTO> invited;
+
+    private Long createDate;
+    private Long announceDate;
+    private Long voteStartDate;
+    private Long voteEndDate;
+    private Long publishResultDate;
+
+    private Map<String, Object> metadata;
+    private Map<String, Object> restults;
 
 
     public VotePollDTO() {
@@ -53,51 +63,83 @@ public class VotePollDTO {
         this.longDescription = longDescription;
     }
 
-    public Long getCreationDate() {
-        return creationDate;
+    public List<VoteableDTO> getVotables() {
+        return votables;
     }
 
-    public void setCreationDate(Long creationDate) {
-        this.creationDate = creationDate;
+    public void setVotables(List<VoteableDTO> votables) {
+        this.votables = votables;
     }
 
-    public Long getPublishDate() {
-        return publishDate;
+    public Long getCreateDate() {
+        return createDate;
     }
 
-    public void setPublishDate(Long publishDate) {
-        this.publishDate = publishDate;
+    public void setCreateDate(Long createDate) {
+        this.createDate = createDate;
     }
 
-    public Long getStartVotingDate() {
-        return startVotingDate;
+    public Long getAnnounceDate() {
+        return announceDate;
     }
 
-    public void setStartVotingDate(Long startVotingDate) {
-        this.startVotingDate = startVotingDate;
+    public void setAnnounceDate(Long announceDate) {
+        this.announceDate = announceDate;
     }
 
-    public Long getFinishVotingDate() {
-        return finishVotingDate;
+    public Long getVoteStartDate() {
+        return voteStartDate;
     }
 
-    public void setFinishVotingDate(Long finishVotingDate) {
-        this.finishVotingDate = finishVotingDate;
+    public void setVoteStartDate(Long voteStartDate) {
+        this.voteStartDate = voteStartDate;
     }
 
-    public Long getResultDate() {
-        return resultDate;
+    public Long getVoteEndDate() {
+        return voteEndDate;
     }
 
-    public void setResultDate(Long resultDate) {
-        this.resultDate = resultDate;
+    public void setVoteEndDate(Long voteEndDate) {
+        this.voteEndDate = voteEndDate;
     }
 
-    public List<VoteOptionDTO> getOptions() {
-        return options;
+    public Long getPublishResultDate() {
+        return publishResultDate;
     }
 
-    public void setOptions(List<VoteOptionDTO> options) {
-        this.options = options;
+    public void setPublishResultDate(Long publishResultDate) {
+        this.publishResultDate = publishResultDate;
+    }
+
+    public UserDTO getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserDTO createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
+    }
+
+    public Map<String, Object> getRestults() {
+        return restults;
+    }
+
+    public void setRestults(Map<String, Object> restults) {
+        this.restults = restults;
+    }
+
+    public List<UserDTO> getInvited() {
+        return invited;
+    }
+
+    public void setInvited(List<UserDTO> invited) {
+        this.invited = invited;
     }
 }

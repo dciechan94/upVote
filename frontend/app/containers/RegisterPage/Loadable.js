@@ -1,11 +1,9 @@
 /**
- * Asynchronously loads the component for LoginPage
+ *
+ * Asynchronously loads the component for RegisterPage
+ *
  */
-import Loadable from 'react-loadable';
 
-import LoadingIndicator from 'components/LoadingIndicator';
+import loadable from 'loadable-components';
 
-export default Loadable({
-  loader: () => import('./index'),
-  loading: LoadingIndicator,
-});
+export default loadable(() => import('./index'));

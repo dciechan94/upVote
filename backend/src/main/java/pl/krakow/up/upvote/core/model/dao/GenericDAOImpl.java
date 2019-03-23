@@ -1,10 +1,10 @@
 package pl.krakow.up.upvote.core.model.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import pl.krakow.up.upvote.core.model.Persistable;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
@@ -14,16 +14,23 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
         implements GenericDAO<T, ID> {
 
     @Autowired
+    protected EntityManagerFactory entityManagerFactory;
+
     protected EntityManager em;
 
     protected final Class<T> entityClass;
 
     protected GenericDAOImpl(Class<T> entityClass) {
+        this.em = entityManagerFactory.createEntityManager();
         this.entityClass = entityClass;
     }
 
     public void setEntityManager(EntityManager em) {
         this.em = em;
+    }
+
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public T findById(ID id) {
@@ -54,9 +61,16 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
 
     public T makePersistent(T instance) {
         // merge() handles transient AND detached instances
-        em.getTransaction().begin();
-        T updated = em.merge(instance);
-        em.getTransaction().commit();
+        T updated = instance;
+        try {
+            em.getTransaction().begin();
+            updated = em.merge(instance);
+            em.getTransaction().commit();
+        } catch(Exception e) {
+            em.getTransaction().rollback();
+            throw e;
+        }
+
         return updated;
     }
 
@@ -73,13 +87,10 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
         );
     }
 
-    @Transactional
     public Long persist(T entity) {
         try {
             em.getTransaction().begin();
             em.persist(entity);
-
-            em.flush();
             em.getTransaction().commit();
         } catch(Exception e) {
             em.getTransaction().rollback();
@@ -89,12 +100,46 @@ public abstract class GenericDAOImpl<T extends Persistable, ID extends Serializa
         return entity.getId();
     }
 
-    @Transactional
     public void remove(ID id) {
-        em.getTransaction().begin();
-        T instance = findById(id, LockModeType.NONE);
-        em.remove(instance);
-        em.getTransaction().commit();
+        try {
+            em.getTransaction().begin();
+            T instance = findById(id, LockModeType.NONE);
+            em.refresh(instance);
+            em.remove(instance);
+            em.getTransaction().commit();
+        } catch(Exception e) {
+            em.getTransaction().rollback();
+            throw e;
+        }
+    }
+
+    public void remove(List<ID> ids) {
+        try {
+            em.getTransaction().begin();
+            for(ID id : ids) {
+                T instance = findById(id);
+                em.refresh(instance);
+                em.remove(instance);
+            }
+            em.getTransaction().commit();
+        } catch(Exception e) {
+            em.getTransaction().rollback();
+            throw e;
+        }
+    }
+
+    public void removeAll() {
+        try {
+            em.getTransaction().begin();
+            for(T instance : findAll()) {
+                em.refresh(instance);
+                em.remove(instance);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw e;
+        }
     }
 
 }

@@ -10,22 +10,26 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
-import { Tile } from 'carbon-components-react';
 
 
 import HomePage from 'containers/HomePage/Loadable';
-import BrowsePage from 'containers/BrowsePage/Loadable';
-import CreateElectionPage from 'containers/CreateElectionPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import RegisterPage from 'containers/RegisterPage/Loadable';
-import LogoutPage from 'containers/LogoutPage/Loadable';
-import OrganizationPage from 'containers/OrganizationPage/Loadable';
-import FeaturePage from 'containers/FeaturePage/Loadable';
+import BrowseElectionPage from 'containers/BrowseElectionPage/Loadable';
+import CreateElectionPage from 'containers/CreateElectionPage/Loadable';
+import ManagePollsPage from 'containers/ManagePollsPage/Loadable';
+import ManageUsersPage from 'containers/ManageUsersPage/Loadable';
+import ProfilePage from 'containers/ProfilePage/Loadable';
+import GenerateTokensPage from 'containers/GenerateTokensPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import FixedLeftNavBar from 'components/FixedLeftNavBar';
+import MenuBar from 'containers/MenuBar';
 import Header from 'components/Header';
-import CarbonFooter from 'components/CarbonFooter';
+import Footer from 'components/Footer';
 
+import { makeSelectCurrentUser } from "./selectors";
+
+
+import GlobalStyle from '../../global-styles';
 
 const AppWrapper = styled.div`
   max-width: calc(1068px + 16px * 2);
@@ -36,51 +40,38 @@ const AppWrapper = styled.div`
   flex-direction: column;
 `;
 
-const MainTileWrapper = styled.div`
-min-height: 80vh;
-`;
-
 export default function App() {
-	/*
 
-	
-				<Route path="/articles/:id" component={ArticlePage} />
-				<Route path="/browse/:type" component={BrowsePage} />
-				<Route path="/search?query=:query" component={SearchPage} />
-				<Route path="/organization/:id" component={FeaturePage} />
-
-				*/
   return (
-<div>
-  <FixedLeftNavBar/>
-
     <AppWrapper>
       <Helmet
-        titleTemplate="%s - Myyy"
-        defaultTitle="My default Title"
+        titleTemplate="%s - upVote"
+        defaultTitle="UP Vote"
       >
-	    <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="My App" />
+        <meta name="description" content="Welcome to Voting System of Uniwersytet Pedagogiczny" />
+      
       </Helmet>
+      
       <Header />
+      <MenuBar />
+      
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route path="/signin" component={LoginPage} />
+        <Route path="/signup" component={RegisterPage} />
+        <Route path="/browse/elections/:type" component={BrowseElectionPage} />
+        <Route path="/elections/create" component={CreateElectionPage} />
+        <Route path="/elections/manage" component={ManagePollsPage} />
+        <Route path="/users/manage" component={ManageUsersPage} />
+        <Route path="/profile" component={ProfilePage} />
+        <Route path="/tokens" component={GenerateTokensPage} />
+        <Route path="" component={NotFoundPage} />
+      </Switch>
+      
 
-      <Tile>
-        <MainTileWrapper>
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/signin" component={LoginPage} />
-          <Route exact path="/signup" component={RegisterPage} />
-          <Route exact path="/signout" component={LogoutPage} />
-          <Route exact path="/browse/:type" component={BrowsePage} />
-          <Route exact path="/elections/create" component={CreateElectionPage} />
-          <Route path="/features" component={FeaturePage} />
-          <Route path="/organization/:id" component={OrganizationPage} />
-          <Route path="" component={NotFoundPage} />
-        </Switch>
-        </MainTileWrapper>
-      </Tile>
-      <CarbonFooter />
+      <Footer />
+      
+      <GlobalStyle />
     </AppWrapper>
-</div>
   );
 }

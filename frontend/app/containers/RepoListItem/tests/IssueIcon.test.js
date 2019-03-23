@@ -1,27 +1,33 @@
 import React from 'react';
-import { shallow, render } from 'enzyme';
+import { mount } from 'enzyme';
+import { enzymeFind } from 'styled-components/test-utils';
+import renderer from 'react-test-renderer';
+import 'jest-styled-components';
 
 import IssueIcon from '../IssueIcon';
 
 describe('<IssueIcon />', () => {
-  it('should render an <svg> tag', () => {
-    const renderedComponent = render(<IssueIcon />);
-    expect(renderedComponent.find('svg').length).toEqual(1);
+  it('should match the snapshot', () => {
+    const renderedComponent = renderer.create(<IssueIcon />).toJSON();
+    expect(renderedComponent).toMatchSnapshot();
   });
 
   it('should have a className attribute', () => {
-    const renderedComponent = shallow(<IssueIcon />);
-    expect(renderedComponent.prop('className')).toBeDefined();
+    const wrapper = mount(<IssueIcon />);
+    const renderedComponent = enzymeFind(wrapper, IssueIcon);
+    expect(renderedComponent.at(0).prop('className')).toBeDefined();
   });
 
   it('should adopt a valid attribute', () => {
     const id = 'test';
-    const renderedComponent = shallow(<IssueIcon id={id} />);
-    expect(renderedComponent.prop('id')).toEqual(id);
+    const wrapper = mount(<IssueIcon id={id} />);
+    const renderedComponent = enzymeFind(wrapper, IssueIcon);
+    expect(renderedComponent.at(0).prop('id')).toEqual(id);
   });
 
   it('should adopt any attribute', () => {
-    const renderedComponent = shallow(<IssueIcon attribute={'test'} />);
-    expect(renderedComponent.prop('attribute')).toBeDefined();
+    const wrapper = mount(<IssueIcon attribute="test" />);
+    const renderedComponent = enzymeFind(wrapper, IssueIcon);
+    expect(renderedComponent.at(0).prop('attribute')).toBeDefined();
   });
 });

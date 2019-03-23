@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.krakow.up.upvote.rest.util.APIUtils;
+import pl.krakow.up.upvote.rest.v1.model.dto.CodeDTO;
+import pl.krakow.up.upvote.rest.v1.model.util.Mappers;
 import pl.krakow.up.upvote.services.ActionCodesManagementService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/codes")
@@ -47,11 +50,27 @@ public class CodesController {
         return ResponseEntity.ok().body(ids);
     }
 
-    @RequestMapping(value = "/base", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<String> base() {
-        List<String> response = new ArrayList<>();
+    public List<CodeDTO> getCodes() {
+        LOGGER.debug("GET /codes");
+        List<CodeDTO> response = codesService.getRegistrationCodes()
+                .stream()
+                .map(code -> Mappers.CODE_TO_DTO_MAPPER(code))
+                .collect(Collectors.toList());
 
         return response;
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity deleteCodes(
+            @RequestBody Map<String, Object> config) {
+        LOGGER.debug("DELETE /codes body={}\", config");
+
+        List<Long> ids = (List<Long>)config.get("ids");
+        ids.forEach(id -> codesService.deleteRegistrationCodeById(id));
+
+        return ResponseEntity.ok().body(null);
     }
 }

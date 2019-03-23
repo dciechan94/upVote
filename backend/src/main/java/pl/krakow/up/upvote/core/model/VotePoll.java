@@ -1,7 +1,7 @@
 package pl.krakow.up.upvote.core.model;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Entity(name = "EV_VotePoll")
@@ -11,7 +11,7 @@ import java.util.List;
 public class VotePoll implements Persistable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     @Column(name = "name", unique = true)
@@ -19,25 +19,32 @@ public class VotePoll implements Persistable {
     protected String shortDescription;
     protected String longDescription;
 
-    protected Instant creationDate;
-
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="creator_id")
-    protected User creator;
+    protected User createdBy;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    List<User> invitedUsers;
+    protected Date createDate;
+    protected Date announceDate;
+    protected Date voteStartDate;
+    protected Date voteEndDate;
+    protected Date publishResultDate;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    List<VoteOption> voteOptions;
+    @OneToMany(mappedBy = "belongsToVotepoll")
+    protected List<Voteable> voteables;
 
-    protected Instant publishDate;
-    protected Instant startVotingDate;
-    protected Instant finishVotingDate;
-    protected Instant resultDate;
+    @ManyToMany
+    @JoinTable(name = "EV_users_invitedIn_votePoll",
+            joinColumns = @JoinColumn(name = "votepoll_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    protected List<User> invitedVoters;
 
 
     public VotePoll() {
+    }
+
+    @PreRemove
+    private void preRemoveAction() {
     }
 
     @Override
@@ -73,67 +80,67 @@ public class VotePoll implements Persistable {
         this.longDescription = longDescription;
     }
 
-    public Instant getCreationDate() {
-        return creationDate;
+    public User getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreationDate(Instant creationDate) {
-        this.creationDate = creationDate;
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public User getCreator() {
-        return creator;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
-    public Instant getPublishDate() {
-        return publishDate;
+    public Date getAnnounceDate() {
+        return announceDate;
     }
 
-    public void setPublishDate(Instant publishDate) {
-        this.publishDate = publishDate;
+    public void setAnnounceDate(Date announceDate) {
+        this.announceDate = announceDate;
     }
 
-    public Instant getStartVotingDate() {
-        return startVotingDate;
+    public Date getVoteStartDate() {
+        return voteStartDate;
     }
 
-    public void setStartVotingDate(Instant startVotingDate) {
-        this.startVotingDate = startVotingDate;
+    public void setVoteStartDate(Date voteStartDate) {
+        this.voteStartDate = voteStartDate;
     }
 
-    public Instant getFinishVotingDate() {
-        return finishVotingDate;
+    public Date getVoteEndDate() {
+        return voteEndDate;
     }
 
-    public void setFinishVotingDate(Instant finishVotingDate) {
-        this.finishVotingDate = finishVotingDate;
+    public void setVoteEndDate(Date voteEndDate) {
+        this.voteEndDate = voteEndDate;
     }
 
-    public Instant getResultDate() {
-        return resultDate;
+    public Date getPublishResultDate() {
+        return publishResultDate;
     }
 
-    public void setResultDate(Instant resultDate) {
-        this.resultDate = resultDate;
+    public void setPublishResultDate(Date publishResultDate) {
+        this.publishResultDate = publishResultDate;
     }
 
-    public List<User> getInvitedUsers() {
-        return invitedUsers;
+    public List<Voteable> getVoteables() {
+        return voteables;
     }
 
-    public void setInvitedUsers(List<User> invitedUsers) {
-        this.invitedUsers = invitedUsers;
+    public void setVoteables(List<Voteable> voteables) {
+        this.voteables = voteables;
     }
 
-    public List<VoteOption> getVoteOptions() {
-        return voteOptions;
+    public List<User> getInvitedVoters() {
+        return invitedVoters;
     }
 
-    public void setVoteOptions(List<VoteOption> voteOptions) {
-        this.voteOptions = voteOptions;
+    public void setInvitedVoters(List<User> invitedVoters) {
+        this.invitedVoters = invitedVoters;
     }
 }

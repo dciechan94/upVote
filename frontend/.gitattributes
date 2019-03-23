@@ -77,9 +77,6 @@ Procfile text
 
 # Documentation
 *.md text
-LICENSE text
-AUTHORS text
-
 
 #
 ## These files are binary and should be left untouched

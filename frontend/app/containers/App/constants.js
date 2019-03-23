@@ -12,8 +12,8 @@
 export const DEFAULT_LOCALE = 'pl';
 export const PROJECT_NAME = 'upVote';
 
-export const SERVER_REST_PROTOCOL = 'http';
-export const SERVER_REST_IP = 'localhost';
+export const SERVER_REST_PROTOCOL = 'https';
+export const SERVER_REST_IP = '91.189.1.45';
 export const SERVER_REST_PORT = '8082';
 export const SERVER_REST_URI = '';
 export const SERVER_REST_URL = SERVER_REST_PROTOCOL + '://' + SERVER_REST_IP + ':' + SERVER_REST_PORT + '/' + SERVER_REST_URI;
@@ -22,10 +22,4 @@ export const SERVER_REST_URL = SERVER_REST_PROTOCOL + '://' + SERVER_REST_IP + '
 export const COMPONENT_NAME = 'App';
 
 export const AUTHETICATION_ERROR = PROJECT_NAME + '/' + COMPONENT_NAME + '/AUTHETICATION_ERROR';
-
-export const LOAD_REPOS = 'boilerplate/App/LOAD_REPOS';
-export const LOAD_REPOS_SUCCESS = 'boilerplate/App/LOAD_REPOS_SUCCESS';
-export const LOAD_REPOS_ERROR = 'boilerplate/App/LOAD_REPOS_ERROR';
-export const LOAD_BASEDATA = 'boilerplate/HomePage/LOAD_BASEDATA';
-export const LOAD_BASEDATA_SUCCESS = 'boilerplate/HomePage/LOAD_BASEDATA_SUCCESS';
-
+export const FATAL_ERROR_OCCURED = PROJECT_NAME + '/' + COMPONENT_NAME + '/FATAL_ERROR_OCCURED';

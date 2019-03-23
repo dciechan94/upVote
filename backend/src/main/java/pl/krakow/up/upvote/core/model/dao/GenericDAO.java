@@ -19,12 +19,14 @@ import java.util.List;
 public interface GenericDAO<T extends Persistable, ID extends Serializable> {
 
     T findById(ID id);
+    //List<T> findById(List<ID> ids);
+    List<T> findAll();
 
     T findById(ID id, LockModeType lockModeType);
 
     T findReferenceById(ID id);
-
-    List<T> findAll();
+   // List<T> findReferenceById(List<ID> ids);
+   // List<T> findAllReferenceById();
 
     Long getCount();
 
@@ -35,6 +37,9 @@ public interface GenericDAO<T extends Persistable, ID extends Serializable> {
     void checkVersion(T entity, boolean forceUpdate);
 
     Long persist(T entity);
+   // List<Long> persist(List<T> entity);
 
     void remove(ID id);
+    void remove(List<ID> ids);
+    void removeAll();
 }

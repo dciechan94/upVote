@@ -5,7 +5,7 @@
 import { memoryHistory } from 'react-router-dom';
 import { shallow } from 'enzyme';
 import React from 'react';
-import identity from 'lodash/identity';
+import { identity } from 'lodash';
 
 import configureStore from '../../configureStore';
 import injectReducer from '../injectReducer';
@@ -43,12 +43,16 @@ describe('injectReducer decorator', () => {
 
   it('should set a correct display name', () => {
     expect(ComponentWithReducer.displayName).toBe('withReducer(Component)');
-    expect(injectReducer({ key: 'test', reducer })(() => null).displayName).toBe('withReducer(Component)');
+    expect(
+      injectReducer({ key: 'test', reducer })(() => null).displayName,
+    ).toBe('withReducer(Component)');
   });
 
   it('should propagate props', () => {
     const props = { testProp: 'test' };
-    const renderedComponent = shallow(<ComponentWithReducer {...props} />, { context: { store } });
+    const renderedComponent = shallow(<ComponentWithReducer {...props} />, {
+      context: { store },
+    });
 
     expect(renderedComponent.prop('testProp')).toBe('test');
   });

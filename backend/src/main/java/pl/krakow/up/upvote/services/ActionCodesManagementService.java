@@ -6,17 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.krakow.up.upvote.core.model.RegistrationCode;
-import pl.krakow.up.upvote.core.model.User;
 import pl.krakow.up.upvote.core.model.dao.RegistrationCodeDAO;
-import pl.krakow.up.upvote.core.model.dao.UserDAO;
 import pl.krakow.up.upvote.core.model.exceptions.ServiceRuntimeException;
-import pl.krakow.up.upvote.core.model.exceptions.UserConstants;
-import pl.krakow.up.upvote.services.util.ValuesMapper;
 
-import javax.validation.*;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ActionCodesManagementService {
 
@@ -44,14 +38,27 @@ public class ActionCodesManagementService {
         registrationCodeDb.remove(codeObj.getId());
     }
 
+    public void deleteRegistrationCodeById(Long id) {
+        RegistrationCode codeObj = registrationCodeDb.findById(id);
+        if(codeObj == null) {
+            throw new ServiceRuntimeException("TODO ERROR");
+        }
+        registrationCodeDb.remove(codeObj.getId());
+    }
+
     public RegistrationCode findRegistrationCode(String code) {
         return registrationCodeDb.findByCode(code);
+    }
+
+    public List<RegistrationCode> getRegistrationCodes() {
+        return registrationCodeDb.findAll();
     }
 
     private Long tryCreateRegistrationCode() {
         try {
             RegistrationCode code = new RegistrationCode();
             code.setCode(generateRandomString(REGISTRATION_CODE_LENGTH));
+            code.setValidUntil(new Date(System.currentTimeMillis()));
             Long id = registrationCodeDb.persist(code);
             return id;
         } catch (Exception e) {

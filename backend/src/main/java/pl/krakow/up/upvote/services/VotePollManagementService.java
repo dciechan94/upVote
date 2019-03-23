@@ -3,15 +3,17 @@ package pl.krakow.up.upvote.services;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.krakow.up.upvote.core.model.Vote;
 import pl.krakow.up.upvote.core.model.VotePoll;
+import pl.krakow.up.upvote.core.model.Voteable;
+import pl.krakow.up.upvote.core.model.dao.VoteDAO;
 import pl.krakow.up.upvote.core.model.dao.VotePollDAO;
 import pl.krakow.up.upvote.core.model.exceptions.ServiceRuntimeException;
 import pl.krakow.up.upvote.core.model.exceptions.UserConstants;
 import pl.krakow.up.upvote.core.model.exceptions.VotePollConstants;
 
 import javax.validation.*;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class VotePollManagementService {
@@ -20,6 +22,10 @@ public class VotePollManagementService {
 
     @Autowired
     private VotePollDAO votePollDb;
+
+    @Autowired
+    private VoteDAO voteDb;
+
 
     public Long createVotePoll(VotePoll votePoll) {
         validateVotePoll(votePoll);
@@ -41,6 +47,25 @@ public class VotePollManagementService {
 
     public VotePoll findVotePoll(Long id) {
         return votePollDb.findById(id);
+    }
+
+    public Map<Long, List<Vote>> getVotesForVoteables(List<Voteable> voteables) {
+        Map<Long, List<Vote>> votes = new HashMap<>();
+
+        for(Voteable voteable :voteables) {
+            votes.put(voteable.getId(), new ArrayList<>());
+        }
+
+        List<Long> voteableIds = voteables.stream().map(voteable -> voteable.getId()).collect(Collectors.toList());
+
+        List<Vote> allVotes = voteDb.findAll();
+        for(Vote vote : allVotes) {
+            if( voteableIds.contains(vote.getVoteable().getId()) ) {
+                votes.get(vote.getVoteable().getId()).add(vote);
+            }
+        }
+
+        return votes;
     }
 
     public List<VotePoll> getVotePolls() {

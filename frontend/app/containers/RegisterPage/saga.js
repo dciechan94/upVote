@@ -1,9 +1,6 @@
-/**
- * Gets the repositories of the user from Github
- */
-
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 import { POST_NEW_USER } from './constants';
+import { SERVER_REST_URL } from '../App/constants';
 //import { reposLoaded, repoLoadingError, loadedBaseData } from 'containers/App/actions';
 import { createNewUser_success, createNewUser_error } from './actions';
 
@@ -20,7 +17,7 @@ export function* postUser() {
   const lastNameVal = yield select(makeSelectLastName())
   const passwordVal = yield select(makeSelectPassword())
 
-  const requestURL = `http://localhost:8082/users/`;
+  const requestURL = SERVER_REST_URL + `users/login/`;
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -55,4 +52,3 @@ export default function* rootSaga() {
     registerUser()
   ])
 }
-

@@ -1,5 +1,10 @@
-import { fromJS } from 'immutable';
+/*
+ *
+ * LoginPage reducer
+ *
+ */
 
+import { fromJS } from 'immutable';
 import {
   CHANGE_EMAIL,
   CHANGE_PASSWORD,
@@ -8,10 +13,9 @@ import {
   POST_LOGIN_ERROR
 } from './constants';
 
-// The initial state of the App
-const initialState = fromJS({
+export const initialState = fromJS({
   email: "",
-  password: "", 
+  password: "",
 
   isEmailValid: true,
   isPasswordValid: true,
@@ -19,7 +23,7 @@ const initialState = fromJS({
   sysFirstName: "",
 });
 
-function loginReducer(state = initialState, action) {
+function loginPageReducer(state = initialState, action) {
   switch (action.type) {
     case CHANGE_EMAIL:
       return state
@@ -47,4 +51,4 @@ function loginReducer(state = initialState, action) {
   }
 }
 
-export default loginReducer;
+export default loginPageReducer;
