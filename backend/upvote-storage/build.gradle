@@ -1,0 +1,9 @@
+description = 'UPVOTE storage'
+
+apply plugin: 'java'
+
+dependencies {
+    compile project(':upvote-model')
+
+    compile group: 'org.apache.commons', name: 'commons-text', version: '1.6' 
+}

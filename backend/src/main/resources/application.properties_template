@@ -1,6 +1,0 @@
-#########################
-##  Server deployment  ##
-#########################
-
-# Port on which all services will be available
-server.port=8082

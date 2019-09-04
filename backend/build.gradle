@@ -1,83 +1,126 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
-    }
-}
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'application'
-
-version = '0.1'
-group = 'pl.krakow.up'
-
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    [
-            compile("org.springframework.boot:spring-boot-starter-web:1.5.9.RELEASE"),
-            compile("org.springframework.data:spring-data-mongodb")
-
-    ].each { dep ->
-        compile(dep) {
-            exclude module: "spring-boot-starter-logging"
-            exclude module: "logback-classic"
+        maven {
+            url "https://plugins.gradle.org/m2/"
         }
     }
 
-    // LOGGING
-    // Exclude "spring-boot-starter-logging" and "logback-classic". Include "spring-boot-starter-log4j2",
-    // "log4j-api", "log4j-core". Remember to skip versions - springBoot declares log4j2 compatible versions
-    // and these are included
-    compile("org.springframework.boot:spring-boot-starter-log4j2")
-    compile("org.apache.logging.log4j:log4j-api")
-    compile("org.apache.logging.log4j:log4j-core")
-
-    //compile group: 'org.springframework.data', name: 'spring-data-jpa'
-    compile("org.hibernate:hibernate-entitymanager")
-    runtime("postgresql:postgresql:9.1-901-1.jdbc4")
-
-    // MONGO_DB
-    // Include "spring-data-mongodb", "mongo-java-driver"
-    compile("org.mongodb:mongo-java-driver:3.2.2")
-
-    compile 'javax.xml.bind:jaxb-api:2.3.0'
-    compile 'com.opencsv:opencsv:4.0'
-
-    // TESTS
-    testCompile("org.springframework:spring-test")
-    testCompile("junit:junit:4.12")
-    testCompile("org.mockito:mockito-all:1.8.4")
-}
-
-
-test {
-    filter {
-    }
-    beforeTest { descriptor ->
-        logger.lifecycle("Running test: " + descriptor)
-    }
-    onOutput { descriptor, event ->
-        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message)
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.4.RELEASE"
+        classpath 'gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.7.1'
     }
 }
 
-springBoot {
-    mainClass = group + ".Runner"
+plugins {
+	id 'io.franzbecker.gradle-lombok' version '2.0'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.10' //we want gradle 2.10 to run this project
+description = 'Uniwersytet Pedagogiczny Voting System - main project'
+
+ext {
+    spotbugsExcludesFile = file('config/spotbugs/spotBugsExclude.xml')
+    spotbugsExcludesTestFile = file('config/spotbugs/spotBugsExcludeTest.xml')
+}
+
+allprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin : 'eclipse'
+  
+    dependencyManagement {
+        dependencies {
+            dependency "org.hibernate:hibernate-core:5.4.1.Final"
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.github.spotbugs'
+	apply plugin: 'io.franzbecker.gradle-lombok'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    spotbugs {
+        toolVersion = "3.1.12"
+        ignoreFailures = false
+        effort = "max"
+        reportLevel = "low"  // report all bugs
+    }
+
+    spotbugsMain {
+        excludeFilter file(spotbugsExcludesFile.absolutePath)
+    }
+
+    spotbugsTest {
+        excludeFilter file(spotbugsExcludesTestFile.absolutePath)
+    }
+
+    dependencies {
+        compileOnly("org.projectlombok:lombok:1.18.4")
+		testCompileOnly("org.projectlombok:lombok:1.18.4")
+
+        //Junit5 @ExtendWith(MockitoExtension.class)
+        testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: "${mockitoVersion}"
+
+        //Junit 5
+        testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}") {
+            exclude group: 'org.hamcrest'
+        }
+        testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+        testCompile("org.junit.jupiter:junit-jupiter-params:${junitVersion}")
+        // needed to run JUnit 5 tests in Eclipse without additional config
+        testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
+
+        testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+        testCompile group: 'org.mockito', name: 'mockito-core', version: "${mockitoVersion}"
+
+    }
+
+    tasks.withType(Test) {
+        useJUnitPlatform()
+
+        testLogging {
+            // lifecycle default logging
+            events "passed", "failed", "skipped"
+            showStandardStreams = false
+            exceptionFormat = "full"
+
+            info {
+                events "started", "passed", "skipped", "failed"
+                // show stdout/stderr on the console
+                showStandardStreams = true
+            }
+        }
+
+        reports {
+            html.enabled = true
+        }
+    }
+
+    tasks.withType(com.github.spotbugs.SpotBugsTask) {
+        reports.xml.enabled = false
+        reports.html.enabled = true
+    }
+
+    task allDependencies(type: DependencyReportTask, description: 'List dependecies for all subprojects', group: 'help')
+}
+
+configure(subprojects - project(':upvote-common')) {
+    dependencies {
+        testCompile project(path: ':upvote-common', configuration: 'testResources')
+    }
+}
+
+wrapper {
+    gradleVersion = '5.1.1'
+    distributionType = Wrapper.DistributionType.BIN
 }

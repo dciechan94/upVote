@@ -1,2 +1,8 @@
-rootProject.name = 'voteSpot'
+rootProject.name = 'upvote'
 
+include 'upvote-model'
+include 'upvote-service'
+include 'upvote-docker'
+include 'upvote-common'
+include 'upvote-storage'
+include 'upvote-api'

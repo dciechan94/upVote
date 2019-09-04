@@ -1,0 +1,15 @@
+version: '3'
+services:
+  upvote:
+    image: "vote-backend:1"
+    container_name: "vote-upVote"
+    build: 
+      context: ./upvote-backend
+      dockerfile: Dockerfile
+    hostname: upVote
+    ports:
+      - "8082:8082"
+      - "7777:7777"
+    network_mode: "host"
+
+      

@@ -1,0 +1,12 @@
+version: '3'
+services:
+  nginx:
+    image: "vote-nginx:1"
+    container_name: "nginx"
+    build:
+      context: ./upvote-frontend/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    network_mode: "host"
