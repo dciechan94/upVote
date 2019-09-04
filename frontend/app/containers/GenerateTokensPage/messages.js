@@ -1,16 +1,30 @@
-/*
- * GenerateTokensPage Messages
- *
- * This contains all the text for the GenerateTokensPage container.
- */
-
 import { defineMessages } from 'react-intl';
 
 export const scope = 'app.containers.GenerateTokensPage';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the GenerateTokensPage container!',
+  helmetTitle: {
+    id: `${scope}.helmet.title`,
+    defaultMessage: 'Generate tokens',
+  },
+  helmetDescription: {
+    id: `${scope}.helmet.description`,
+    defaultMessage: 'Fill in the form to generate tokens.',
+  },
+  tokenCount: {
+    id: `${scope}.tokenCount`,
+    defaultMessage: 'Count',
+  },
+  tokenValidInDays: {
+    id: `${scope}.tokenValidInDays`,
+    defaultMessage: 'Valid in days',
+  },
+  generateTokens: {
+    id: `${scope}.generateTokens`,
+    defaultMessage: 'Generate',
+  },
+  actualTokens: {
+    id: `${scope}.actualTokens`,
+    defaultMessage: 'Actual tokens',
   },
 });

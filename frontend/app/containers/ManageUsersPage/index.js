@@ -1,58 +1,77 @@
-/**
+/*
+ * FeaturePage
  *
- * ManageUsersPage
- *
+ * List all the features
  */
-
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
 
-import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
-import makeSelectManageUsersPage from './selectors';
-import reducer from './reducer';
-import saga from './saga';
+import H1 from 'components/H1';
 import messages from './messages';
+import List from './List';
+import ListItem from './ListItem';
+import ListItemTitle from './ListItemTitle';
 
-/* eslint-disable react/prefer-stateless-function */
-export class ManageUsersPage extends React.PureComponent {
-  render() {
-    return (
-      <div>
+export default function FeaturePage() {
+  return (
+    <div>
+      <Helmet>
+        <title>Feature Page</title>
+        <meta
+          name="description"
+          content="Feature page of React.js Boilerplate application"
+        />
+      </Helmet>
+      <H1>
         <FormattedMessage {...messages.header} />
-      </div>
-    );
-  }
+      </H1>
+      <List>
+        <ListItem>
+          <ListItemTitle>
+            <FormattedMessage {...messages.scaffoldingHeader} />
+          </ListItemTitle>
+          <p>
+            <FormattedMessage {...messages.scaffoldingMessage} />
+          </p>
+        </ListItem>
+
+        <ListItem>
+          <ListItemTitle>
+            <FormattedMessage {...messages.feedbackHeader} />
+          </ListItemTitle>
+          <p>
+            <FormattedMessage {...messages.feedbackMessage} />
+          </p>
+        </ListItem>
+
+        <ListItem>
+          <ListItemTitle>
+            <FormattedMessage {...messages.routingHeader} />
+          </ListItemTitle>
+          <p>
+            <FormattedMessage {...messages.routingMessage} />
+          </p>
+        </ListItem>
+
+        <ListItem>
+          <ListItemTitle>
+            <FormattedMessage {...messages.networkHeader} />
+          </ListItemTitle>
+          <p>
+            <FormattedMessage {...messages.networkMessage} />
+          </p>
+        </ListItem>
+
+        <ListItem>
+          <ListItemTitle>
+            <FormattedMessage {...messages.intlHeader} />
+          </ListItemTitle>
+          <p>
+            <FormattedMessage {...messages.intlMessage} />
+          </p>
+        </ListItem>
+      </List>
+    </div>
+  );
 }
-
-ManageUsersPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = createStructuredSelector({
-  manageUsersPage: makeSelectManageUsersPage(),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
-}
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
-
-const withReducer = injectReducer({ key: 'manageUsersPage', reducer });
-const withSaga = injectSaga({ key: 'manageUsersPage', saga });
-
-export default compose(
-  withReducer,
-  withSaga,
-  withConnect,
-)(ManageUsersPage);

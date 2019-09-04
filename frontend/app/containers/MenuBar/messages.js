@@ -1,9 +1,3 @@
-/*
- * MenuBar Messages
- *
- * This contains all the text for the MenuBar container.
- */
-
 import { defineMessages } from 'react-intl';
 
 export const scope = 'app.containers.MenuBar';
@@ -11,7 +5,7 @@ export const scope = 'app.containers.MenuBar';
 export default defineMessages({
   actualVotings: {
     id: `${scope}.actualVotings`,
-    defaultMessage: 'Actual',
+    defaultMessage: 'Actual polls',
   },
   archivedVotings: {
     id: `${scope}.archivedVotings`,
@@ -41,4 +35,21 @@ export default defineMessages({
     id: `${scope}.manageUsers`,
     defaultMessage: 'Manage',
   },
+  termsOfService: {
+    id: `${scope}.termsOfService`,
+    defaultMessage: 'Terms of Service',
+  },
+  usersMainMenu: {
+    id: `${scope}.usersMainMenu`,
+    defaultMessage: 'Users',
+  },
+  voteMainMenu: {
+    id: `${scope}.voteMainMenu`,
+    defaultMessage: 'Vote!',
+  },
+  pollsMainMenu: {
+    id: `${scope}.pollsMainMenu`,
+    defaultMessage: 'Polls',
+  },
+
 });

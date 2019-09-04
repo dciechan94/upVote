@@ -1,16 +1,14 @@
-/*
- * RegisterPage Messages
- *
- * This contains all the text for the RegisterPage container.
- */
-
 import { defineMessages } from 'react-intl';
 
-export const scope = 'app.containers.RegisterPage';
+export const scope = 'app.containers.LoginPage';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the RegisterPage container!',
+  helmetTitle: {
+    id: `${scope}.helmet.title`,
+    defaultMessage: 'Sign up',
+  },
+  helmetDescription: {
+    id: `${scope}.helmet.description`,
+    defaultMessage: 'Fill in the register form to create new user.',
   },
 });

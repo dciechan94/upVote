@@ -1,3 +1,6 @@
 # Semi-products
 artifacts/
 devOps.sh
+
+backendLegacyBoot1.5/
+frontendLegacy/

@@ -1,13 +1,4 @@
 {
-  "app.components.LoginForm.createAccount": "Create account",
-  "app.components.LoginForm.email": "Email",
-  "app.components.LoginForm.loginButtonText": "Enter",
-  "app.components.LoginForm.password": "Password",
-  "app.containers.BrowseElectionPage.header": "This is the BrowseElectionPage container!",
-  "app.containers.CreateElectionPage.header": "This is the CreateElectionPage container!",
-  "app.containers.LoginPage.header": "This is the LoginPage container!",
-  "app.containers.MenuBar.header": "This is the MenuBar container!",
-  "app.containers.RegisterPage.header": "This is the RegisterPage container!",
   "boilerplate.components.Footer.author.message": "Made with love by {author}.",
   "boilerplate.components.Footer.license.message": "This project is licensed under the MIT license.",
   "boilerplate.components.Header.features": "Features",

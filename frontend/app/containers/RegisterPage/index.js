@@ -1,72 +1,112 @@
-/**
- *
- * RegisterPage
- *
- */
-
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
+import { injectIntl } from 'react-intl';
 
-import { Card } from "@blueprintjs/core";
+import { Card } from '@blueprintjs/core';
 
-import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
+import { useInjectReducer } from 'utils/injectReducer';
+import { useInjectSaga } from 'utils/injectSaga';
+
 import reducer from './reducer';
 import saga from './saga';
+import messages from './messages';
 
 import { changeRegistrationCode, changeEmail, changeFirstName, changeLastName, changePassword, changePasswordRepeat,
-  createNewUser, closeRegistrationResultModal } from './actions';
+  createNewUser, closeRegistrationResultModal, changeTermsCheckBoxValue } from './actions';
 import { makeSelectRegistrationCode, makeSelectEmail, makeSelectFirstName, makeSelectLastName, makeSelectPassword,
   makeSelectPasswordRepeat, makeSelectIsRegistrationCodeValid, makeSelectIsEmailValid, makeSelectIsFirstNameValid,
   makeSelectIsLastNameValid, makeSelectIsPasswordValid, makeSelectIsPasswordRepeatValid, makeSelectShowRegistrationResultModal,
-  makeSelectIsRegistrationResultError, makeSelectRegistrationResultMessage } from './selectors'
+  makeSelectIsRegistrationResultError, makeSelectRegistrationResultMessage, makeSelectTermsCheckBoxValue } from './selectors'
 import RegistrationForm from 'components/RegistrationForm';
 
-/* eslint-disable react/prefer-stateless-function */
-export class RegisterPage extends React.PureComponent {
-  render() {
-    return (
-      <Card style={{margin: "auto", width: 400}}>
-        <Helmet>
-          <title>RegisterPage</title>
-          <meta name="description" content="Description of RegisterPage" />
-        </Helmet>
-        <RegistrationForm
-          registrationCode={this.props.registrationCode}
-          email={this.props.email}
-          firstName={this.props.firstName}
-          lastName={this.props.lastName}
-          password={this.props.password}
-          passwordRepeat={this.props.passwordRepeat}
+const key = 'register';
 
-          isRegistrationCodeValid={this.props.isRegistrationCodeValid}
-          isEmailValid={this.props.isEmailValid}
-          isFirstNameValid={this.props.isFirstNameValid}
-          isLastNameValid={this.props.isLastNameValid}
-          isPasswordValid={this.props.isPasswordValid}
-          isPasswordRepeatValid={this.props.isPasswordRepeatValid}
+export function RegisterPage({
+  intl,
+  registrationCode,
+  email,
+  firstName,
+  lastName,
+  password,
+  passwordRepeat,
+  isRegistrationCodeValid,
+  isEmailValid,
+  isFirstNameValid,
+  isLastNameValid,
+  isPasswordValid,
+  isPasswordRepeatValid,
+  termsCheckBoxValue,
+  showRegistrationResultModal,
+  isRegistrationResultError,
+  registrationResultMessage,
 
-          onChangeRegistrationCode={this.props.onChangeRegistrationCode}
-          onChangeEmail={this.props.onChangeEmail}
-          onChangeFirstName={this.props.onChangeFirstName}
-          onChangeLastName={this.props.onChangeLastName}
-          onChangePassword={this.props.onChangePassword}
-          onChangePasswordRepeat={this.props.onChangePasswordRepeat}
-          onCreateNewUser={this.props.onCreateNewUser}
+  onChangeRegistrationCode,
+  onChangeEmail,
+  onChangeFirstName,
+  onChangeLastName,
+  onChangePassword,
+  onChangePasswordRepeat,
+  onTermsCheckBoxChange,
+  onCreateNewUser,
 
-          showRegistrationResultModal={this.props.showRegistrationResultModal}
-          isRegistrationResultError={this.props.isRegistrationResultError}
-          registrationResultMessage={this.props.registrationResultMessage}
+  onCloseRegistrationResultModal,
 
-          onCloseRegistrationResultModal={this.props.onCloseRegistrationResultModal}
+}) {
+  useInjectReducer({ key, reducer });
+  useInjectSaga({ key, saga });
+
+  const {formatMessage} = intl;
+
+  return (
+    <div>
+      <Helmet>
+        <title>{formatMessage(messages.helmetTitle)}</title>
+        <meta
+          name="description"
+          content={formatMessage(messages.helmetDescription)}
         />
+      </Helmet>
+      <Card>
+        <Card style={{margin: "auto", width: 400}}>
+          <RegistrationForm
+            registrationCode={registrationCode}
+            email={email}
+            firstName={firstName}
+            lastName={lastName}
+            password={password}
+            passwordRepeat={passwordRepeat}
+
+            isRegistrationCodeValid={isRegistrationCodeValid}
+            isEmailValid={isEmailValid}
+            isFirstNameValid={isFirstNameValid}
+            isLastNameValid={isLastNameValid}
+            isPasswordValid={isPasswordValid}
+            isPasswordRepeatValid={isPasswordRepeatValid}
+            termsCheckBoxValue={termsCheckBoxValue}
+
+            onChangeRegistrationCode={onChangeRegistrationCode}
+            onChangeEmail={onChangeEmail}
+            onChangeFirstName={onChangeFirstName}
+            onChangeLastName={onChangeLastName}
+            onChangePassword={onChangePassword}
+            onChangePasswordRepeat={onChangePasswordRepeat}
+            onTermsCheckBoxChange={onTermsCheckBoxChange}
+            onCreateNewUser={onCreateNewUser}
+
+            showRegistrationResultModal={showRegistrationResultModal}
+            isRegistrationResultError={isRegistrationResultError}
+            registrationResultMessage={registrationResultMessage}
+
+            onCloseRegistrationResultModal={onCloseRegistrationResultModal}
+          />
+        </Card>
       </Card>
-    );
-  }
+    </div>
+  );
 }
 
 RegisterPage.propTypes = {
@@ -83,6 +123,7 @@ RegisterPage.propTypes = {
   isLastNameValid: PropTypes.bool,
   isPasswordValid: PropTypes.bool,
   isPasswordRepeatValid: PropTypes.bool,
+  termsCheckBoxValue: PropTypes.bool,
 
   onChangeRegistrationCode: PropTypes.func,
   onChangeEmail: PropTypes.func,
@@ -90,6 +131,7 @@ RegisterPage.propTypes = {
   onChangeLastName: PropTypes.func,
   onChangePassword: PropTypes.func,
   onChangePasswordRepeat: PropTypes.func,
+  onTermsCheckBoxChange: PropTypes.func,
   onCreateNewUser: PropTypes.func,
 
   showRegistrationResultModal: PropTypes.bool,
@@ -98,6 +140,7 @@ RegisterPage.propTypes = {
 
   onCloseRegistrationResultModal: PropTypes.func,
 };
+
 
 const mapStateToProps = createStructuredSelector({
   registrationCode: makeSelectRegistrationCode(),
@@ -113,13 +156,14 @@ const mapStateToProps = createStructuredSelector({
   isLastNameValid: makeSelectIsLastNameValid(),
   isPasswordValid: makeSelectIsPasswordValid(),
   isPasswordRepeatValid: makeSelectIsPasswordRepeatValid(),
+  termsCheckBoxValue: makeSelectTermsCheckBoxValue(),
 
   showRegistrationResultModal: makeSelectShowRegistrationResultModal(),
   isRegistrationResultError: makeSelectIsRegistrationResultError(),
   registrationResultMessage: makeSelectRegistrationResultMessage(),
 });
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     onChangeRegistrationCode: (evt) => dispatch(changeRegistrationCode(evt.target.value)),
     onChangeEmail: (evt) => dispatch(changeEmail(evt.target.value)),
@@ -127,6 +171,7 @@ function mapDispatchToProps(dispatch) {
     onChangeLastName: (evt) => dispatch(changeLastName(evt.target.value)),
     onChangePassword: (evt) => dispatch(changePassword(evt.target.value)),
     onChangePasswordRepeat: (evt) => dispatch(changePasswordRepeat(evt.target.value)),
+    onTermsCheckBoxChange: () => dispatch(changeTermsCheckBoxValue()),
     onCreateNewUser: () => dispatch(createNewUser()),
 
     onCloseRegistrationResultModal: () => dispatch(closeRegistrationResultModal()),
@@ -138,11 +183,8 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'registerPage', reducer });
-const withSaga = injectSaga({ key: 'registerPage', saga });
-
 export default compose(
-  withReducer,
-  withSaga,
   withConnect,
+  injectIntl,
+  memo
 )(RegisterPage);

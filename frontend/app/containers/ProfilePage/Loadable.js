@@ -1,9 +1,7 @@
-/**
- *
- * Asynchronously loads the component for ProfilePage
- *
- */
+import React from 'react';
+import loadable from 'utils/loadable';
+import LoadingIndicator from 'components/LoadingIndicator';
 
-import loadable from 'loadable-components';
-
-export default loadable(() => import('./index'));
+export default loadable(() => import('./index'), {
+  fallback: <LoadingIndicator />,
+});

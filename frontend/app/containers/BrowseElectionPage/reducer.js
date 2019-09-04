@@ -1,48 +1,84 @@
-/*
- *
- * BrowseElectionPage reducer
- *
- */
-
-import { fromJS } from 'immutable';
+import produce from 'immer';
 import {
-  LOAD_BROWSE_DATA,
-  LOAD_BROWSE_DATA_SUCCESS,
-  LOAD_BROWSE_DATA_ERROR,
+  CHANGE_POLL_QUERY_STRING,
+  FETCH_ALL_POLLS,
+  FETCH_ALL_POLLS_SUCCESS,
+  FETCH_ALL_POLLS_ERROR,
+
+  SELECT_POLL_ROW,
+  CHANGE_CHB_CANDIDATE_SELECTION,
+  CLOSE_POLL_DETAILS,
+  SEND_VOTES,
+  SEND_VOTES_SUCCESS,
+  SEND_VOTES_ERROR,
 } from './constants';
 
-export const initialState = fromJS({
-  browseData: {
-    items: [
-      { id: 1, name: "Wybory Miss Polsatu", description: "To jest krótki opis wydarzenia", start_date: "21.08.2018r. 08:00", end_date: "22.08.2018r. 08:00" },
-      { id: 2, name: "Wybory Miss TVN", description: "...", start_date: "20.08.2018r. 08:00", end_date: "22.08.2018r. 10:00" },
-      { id: 3, name: "Wybory Miss Polonia", description: "...", start_date: "23.08.2018r. 08:00", end_date: "28.08.2018r. 08:00" },
-    ],
-    paging: {
-      begin: 0,
-      end: 9,
-      pageSize: 10,
-      count: 100
+
+
+export const initialState = {
+  // model
+  polls: [],
+  pollQueryString: "",
+
+  pollInDialog: null,
+  candidates: [],
+  selectedCandidates: [],
+  // validation
+
+};
+
+const browseElectionReducer = (state = initialState, action) =>
+  produce(state, draft => {
+    switch (action.type) {
+
+      case CHANGE_POLL_QUERY_STRING:
+        draft.pollQueryString = action.pollQueryString;
+        break;
+
+      case FETCH_ALL_POLLS:
+        break;
+
+      case FETCH_ALL_POLLS_SUCCESS:
+        draft.polls = action.jsonData;
+        break;
+
+      case FETCH_ALL_POLLS_ERROR:
+        break;
+
+
+      case SELECT_POLL_ROW:
+        draft.pollInDialog = action.poll
+        draft.isVoteDialogOpen = true
+        draft.selectedCandidates = []
+        break;
+      case CHANGE_CHB_CANDIDATE_SELECTION:
+        draft.selectedCandidates = []
+
+        if (action.checked == true) {
+          if(draft.selectedCandidates.indexOf(action.userId) === -1) {
+            draft.selectedCandidates.push(action.userId);
+          }
+        } else {
+          draft.selectedCandidates = draft.selectedCandidates.filter(el => el !== action.userId);
+        }
+        break;
+      case CLOSE_POLL_DETAILS:
+        draft.pollInDialog = null
+        draft.isVoteDialogOpen = false
+        draft.selectedCandidates = []
+        break;
+
+
+      case SEND_VOTES:
+        break;
+
+      case SEND_VOTES_SUCCESS:
+        break;
+
+      case SEND_VOTES_ERROR:
+        break;
+
     }
-  }
-});
+  });
 
-function browseElectionPageReducer(state = initialState, action) {
-  switch (action.type) {
-    case LOAD_BROWSE_DATA:
-      return state
-        .set('loadingBaseData', true);
-	  case LOAD_BROWSE_DATA_SUCCESS:
-      return state
-        .set('loadingBaseData', false)
-        .set('organizationBaseDataJson', action.jsonData);
-	  case LOAD_BROWSE_DATA_ERROR:
-      return state
-        .set('loadingBaseData', false);
-
-    default:
-      return state;
-  }
-}
-
-export default browseElectionPageReducer;
+export default browseElectionReducer;

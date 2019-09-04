@@ -1,0 +1,17 @@
+description = 'Common utilities'
+
+task testJar(type: Jar, description: 'Assemble a jar containing test classes and resources.', group: 'build') {
+    classifier = 'test-resources'
+    exclude '**/*.sample'
+    from sourceSets.test.output
+}
+
+jar.finalizedBy testJar
+
+configurations {
+    testResources
+}
+
+artifacts {
+    testResources testJar
+}

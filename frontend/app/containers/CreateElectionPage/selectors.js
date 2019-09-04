@@ -1,23 +1,102 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-/**
- * Direct selector to the createElectionPage state domain
- */
+const selectCreateElection = state => state.createElection || initialState;
 
-const selectCreateElectionPageDomain = state =>
-  state.get('createElectionPage', initialState);
+const makeSelectName = () =>
+  createSelector(
+    selectCreateElection,
+    (createElectionState) => createElectionState.name
+  );
+const makeSelectDescription = () =>
+  createSelector(
+    selectCreateElection,
+    (createElectionState) => createElectionState.description
+  );
 
-/**
- * Other specific selectors
- */
+const makeSelectStartDate = () =>
+  createSelector(
+    selectCreateElection,
+    (createElectionState) => createElectionState.startDate
+  );
+const makeSelectEndDate = () =>
+  createSelector(
+    selectCreateElection,
+    (createElectionState) => createElectionState.endDate
+  );
+const makeSelectStartEndDate = () =>
+  createSelector(
+    selectCreateElection,
+    (createElectionState) => createElectionState.startEndDate
+  );
+const makeSelectPublishDate = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.publishDate
+);
+const makeSelectUsers = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.users
+);
+const makeSelectSelectedUsers = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.selectedUsers
+);
+const makeSelectCreatedUsers = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.createdUsers
+);
+const makeSelectUserQueryString = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.userQueryString
+);
+const makeSelectIsNamePopulated = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.isNamePopulated
+);
+const makeSelectIsDatesInOrder = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.isDatesInOrder
+);
+const makeSelectIsCandidateListNotEmpty = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.isCandidateListNotEmpty
+);
 
-/**
- * Default selector used by CreateElectionPage
- */
+const makeSelectEditablePollId = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.editablePollId
+);
+const makeSelectEditablePoll = () =>
+createSelector(
+  selectCreateElection,
+  (createElectionState) => createElectionState.editablePoll
+);
 
-const makeSelectCreateElectionPage = () =>
-  createSelector(selectCreateElectionPageDomain, substate => substate.toJS());
+export {
+  selectCreateElection,
+  makeSelectName,
+  makeSelectDescription,
+  makeSelectStartDate,
+  makeSelectEndDate,
+  makeSelectStartEndDate,
+  makeSelectPublishDate,
+  makeSelectUsers,
+  makeSelectSelectedUsers,
+  makeSelectCreatedUsers,
+  makeSelectUserQueryString,
+  makeSelectIsNamePopulated,
+  makeSelectIsDatesInOrder,
+  makeSelectIsCandidateListNotEmpty,
 
-export default makeSelectCreateElectionPage;
-export { selectCreateElectionPageDomain };
+  makeSelectEditablePollId,
+  makeSelectEditablePoll,
+};

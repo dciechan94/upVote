@@ -14,5 +14,6 @@ services:
     hostname: postgres
     ports:
       - "5432:5432"
+    network_mode: "host"
 
       

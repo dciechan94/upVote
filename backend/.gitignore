@@ -1,30 +1,37 @@
-# Compiled class file
-*.class
-
-# Log file
-logs/
-*.log
-
-# Package Files #
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# IntelliJ
-*.iml
-
-# Metadata
+# Gradle
 .gradle/
-.idea/
-
-# Semi-products
-gradle/
 build/
-out/
+bin/
 
-# Configuration files
-src/main/resources/application.properties
-src/main/resources/log4j2.xml
+# Gradle extensions
+lib/
+
+# Eclipse
+.classpath
+.project
+.settings/
+.metadata/
+
+### STS ###
+.apt_generated
+.factorypath
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+application-local.properties
+*.log

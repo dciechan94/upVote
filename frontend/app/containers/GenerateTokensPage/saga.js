@@ -1,143 +1,106 @@
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 import request from 'utils/request';
 
-import { SERVER_REST_URL } from '../App/constants';
-import { 
+import { Intent } from "@blueprintjs/core";
+
+import {
   GENERATE_TOKENS,
-  GET_ACTIVE_TOKENS,
-  DELETE_TOKENS,
- } from './constants';
- import { 
-  generateTokens_success, 
-  generateTokens_error,
-  getActiveTokens_success,
-  getActiveTokens_error,
-  deleteTokens_success,
-  deleteTokens_error
-} from './actions';
-import { fatalErrorOccured } from "../App/actions";
-import { 
-  makeSelectTokensCount, 
-  makeSelectTokensTimeout,
-  makeSelectCodesSelection
-} from './selectors';
-import { 
-  makeSelectCurrentUser
-} from '../App/selectors';
+  FETCH_ACTUAL_TOKENS } from './constants';
 
+import { openGlobalDialog } from '../App/actions';
+import { SERVER_REST_URL } from '../App/constants';
+import { makeSelectToken } from '../App/selectors';
 
+import { fetchActualTokens_success, generateTokens_success, fetchActualTokens } from './actions';
+import { makeSelectTokenCount,
+  makeSelectTokenValidInDays } from './selectors'
 
+export function* tryFetchActualTokens() {
+  const token = yield select(makeSelectToken());
 
-
-export function* generateTokensSaga() {
-  const user = yield select(makeSelectCurrentUser())
-  const username = user.get('email')
-  const password = user.get('password')
-  const authToken = new Buffer(username+':'+password).toString('base64');
-
-  const tokensCount = yield select(makeSelectTokensCount());
-  const tokensTimeout = yield select(makeSelectTokensTimeout())
-
-  const requestURL = SERVER_REST_URL + `codes`;
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + authToken
-    },
-    body: JSON.stringify({
-      type: 'registration',
-      count: tokensCount,
-      timeout: tokensTimeout
-    })
-  }
-
-  try {
-    const jsonData = yield call(request, requestURL, requestOptions);
-    yield put(generateTokens_success(jsonData));
-  }
-  catch(e) {
-    console.log("error")
-    yield put(fatalErrorOccured("Cannot fetch generate tokens"));
-    //yield put(generateTokens_error(jsonData.data));
-  }
-}
-
-export function* getActiveTokensSaga() {
-  const user = yield select(makeSelectCurrentUser())
-  const username = user.get('email')
-  const password = user.get('password')
-  const authToken = new Buffer(username+':'+password).toString('base64');
-
-  const requestURL = SERVER_REST_URL + `codes`;
+  const requestURL = SERVER_REST_URL + `codes/`;
   const requestOptions = {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + authToken
+      'Authorization': 'Basic ' + token,
     }
   }
 
   try {
     const jsonData = yield call(request, requestURL, requestOptions);
-    yield put(getActiveTokens_success(jsonData));
-  }
-  catch(e) {
-    console.log("error")
-    yield put(fatalErrorOccured("Cannot fetch active tokens"));
-    //yield put(getActiveTokens_error(jsonData.data));
-  }
+    yield put(fetchActualTokens_success(jsonData));
+  } catch (error) {
 
+    var config = {
+      icon: "user",
+      intent: Intent.DANGER,
+      title: "Cannot fetch tokens",
+      message: error.message,
+      buttonText: "OK",
+    }
+
+    yield put(openGlobalDialog(config));
+  }
 }
 
-export function* deleteTokensSaga() {
-  const user = yield select(makeSelectCurrentUser())
-  const username = user.get('email')
-  const password = user.get('password')
-  const authToken = new Buffer(username+':'+password).toString('base64');
+export function* tryGenerateTokens() {
+  const token = yield select(makeSelectToken());
+  const tokenCount = yield select(makeSelectTokenCount());
+  const tokenValidInDays = yield select(makeSelectTokenValidInDays());
 
-  const tokenIds = yield select(makeSelectCodesSelection());
-
-  const requestURL = SERVER_REST_URL + `codes`;
+  const requestURL = SERVER_REST_URL + `codes/`;
   const requestOptions = {
-    method: 'DELETE',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + authToken
+      'Authorization': 'Basic ' + token,
     },
     body: JSON.stringify({
-      ids: tokenIds
+      count: tokenCount,
+      timeout: tokenValidInDays,
     })
   }
 
-
   try {
     const jsonData = yield call(request, requestURL, requestOptions);
-    yield put(deleteTokens_success(jsonData));
+
+    var config = {
+      icon: "user",
+      intent: Intent.SUCCESS,
+      title: "Success",
+      message: "Tokens created",
+      buttonText: "OK",
+    }
+
+    yield put(openGlobalDialog(config));
+    yield put(fetchActualTokens(config));
+    yield put(generateTokens_success(jsonData));
+  } catch (error) {
+
+    var config = {
+      icon: "user",
+      intent: Intent.DANGER,
+      title: "Cannot create tokens",
+      message: error.message,
+      buttonText: "OK",
+    }
+
+    yield put(openGlobalDialog(config));
   }
-  catch(e) {
-    console.log("error")
-    yield put(fatalErrorOccured("Cannot fetch delete tokens"));
-    //yield put(deleteTokens_error(jsonData.data));
-  }
 }
 
-
-
-export function* generateTokensSagaYield() {
-  yield takeLatest(GENERATE_TOKENS, generateTokensSaga)
+export function* generateTokensSaga() {
+  yield takeLatest(GENERATE_TOKENS, tryGenerateTokens)
 }
-export function* getActiveTokensSagaYield() {
-    yield takeLatest(GET_ACTIVE_TOKENS, getActiveTokensSaga)
-}
-export function* deleteTokensSagaYield() {
-  yield takeLatest(DELETE_TOKENS, deleteTokensSaga)
+
+export function* fetchActualTokensSaga() {
+  yield takeLatest(FETCH_ACTUAL_TOKENS, tryFetchActualTokens)
 }
 
 export default function* rootSaga() {
   yield all([
-    generateTokensSagaYield(),
-    getActiveTokensSagaYield(),
-    deleteTokensSagaYield()
+    generateTokensSaga(),
+    fetchActualTokensSaga(),
   ])
 }

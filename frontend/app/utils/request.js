@@ -12,6 +12,21 @@ function parseJSON(response) {
   return response.json();
 }
 
+
+function finish(response) {
+    return response;
+}
+
+function err(response) {
+  throw response.json();
+}
+
+function err2(response) {
+  return response.then((r) =>
+  {throw r}
+  );
+}
+
 /**
  * Checks if a network request came back fine, and throws an error if not
  *
@@ -23,10 +38,7 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
-
-  const error = new Error(response.statusText);
-  error.response = response;
-  throw error;
+throw response;
 }
 
 /**
@@ -40,5 +52,8 @@ function checkStatus(response) {
 export default function request(url, options) {
   return fetch(url, options)
     .then(checkStatus)
-    .then(parseJSON);
+    .then(parseJSON)
+    .then(finish)
+    .catch(err)
+    .catch(err2);
 }

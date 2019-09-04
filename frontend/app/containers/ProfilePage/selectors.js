@@ -1,22 +1,51 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-/**
- * Direct selector to the profilePage state domain
- */
+const selectProfile = state => state.profile || initialState;
 
-const selectProfilePageDomain = state => state.get('profilePage', initialState);
+const makeSelectEmail = () =>
+  createSelector(
+    selectProfile,
+    (profileState) => profileState.email
+  );
 
-/**
- * Other specific selectors
- */
+const makeSelectFirstName = () =>
+  createSelector(
+    selectProfile,
+    (profileState) => profileState.firstName
+  );
 
-/**
- * Default selector used by ProfilePage
- */
+const makeSelectLastName = () =>
+  createSelector(
+    selectProfile,
+    (profileState) => profileState.lastName
+  );
 
-const makeSelectProfilePage = () =>
-  createSelector(selectProfilePageDomain, substate => substate.toJS());
+const makeSelectUsername = () =>
+  createSelector(
+    selectProfile,
+    (profileState) => profileState.username
+  );
 
-export default makeSelectProfilePage;
-export { selectProfilePageDomain };
+const makeSelectPassword = () =>
+  createSelector(
+    selectProfile,
+    (profileState) => profileState.password
+  );
+
+const makeSelectPasswordRepeat = () =>
+  createSelector(
+    selectProfile,
+    (profileState) => profileState.passwordRepeat
+  );
+
+export {
+  selectProfile,
+
+  makeSelectEmail,
+  makeSelectFirstName,
+  makeSelectLastName,
+  makeSelectUsername,
+  makeSelectPassword,
+  makeSelectPasswordRepeat,
+};

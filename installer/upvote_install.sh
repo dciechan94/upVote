@@ -1,5 +1,11 @@
 #!/bin/bash
 
+applyDeployConfig() {
+  HOST_DOMAIN="dciechan.pl"
+  
+  #sed -i "s/192\.168\.99\.100/127\.0\.0\.1/g" ./upvote-backend/application.properties
+  #sed -i "s/145\.239\.84\.188/$HOST_DOMAIN\.pl/g" ./upvote-frontend/nginx/html/*
+}
 
 initializeLogger() {
   UVP_NOW_TS=`date -u "+%Y%m%d-%H%M%S-%M3UTC"`
@@ -66,6 +72,27 @@ checkDocker() {
   fi
 }
 
+checkDockerCompose() {
+  docker-compose --version
+  docker_compose_version_rc=$?
+  
+  if [[ ${docker_compose_version_rc} == 0 ]] ; then
+    logInfoMsg "Docker-compose is installed"
+  else
+    installDockerCompose
+	
+	docker-compose --version
+    docker_compose_version_rc=$?
+    
+	if [[ ${docker_compose_version_rc} == 0 ]] ; then
+      logInfoMsg "docker-compose is installed"
+    else
+      logErrorMsg "docker-compose is not running properly"
+	  exit 1
+	fi
+  fi
+}
+
 installDocker() {
   logInfoMsg "Installing Docker in progress..."
   
@@ -95,10 +122,11 @@ installDocker() {
 installDockerCompose() {
   logInfoMsg "Installing docker-compose in progress..."
   
-  curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  chmod +x /usr/local/bin/docker-compose
+  sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   
-  logInfoMsg "Installing docker-compose completed"
+  sudo chmod +x /usr/local/bin/docker-compose
+  
+  logInfoMsg "Installing docker-compose completed."
 }
   
 setLocalVariables() {
@@ -118,6 +146,30 @@ uninstallDocker() {
   
   #uninstall docker-compose
   rm /usr/local/bin/docker-compose
+}
+
+uninstallDockerContainers() {
+  CONTAINERS_TO_DELETE=`docker ps -a | grep 'vote-nginx\|vote-backend\|vote-postgres' | awk '{ print $1 }' | tr '\n' ' '`
+  if [ -z "$CONTAINERS_TO_DELETE" ]
+  then
+    logInfoMsg "UP Vote containers not found. Nothing to remove."
+  else
+    logInfoMsg "Removing containers: ${CONTAINERS_TO_DELETE}"
+	docker rm $CONTAINERS_TO_DELETE --force
+	logInfoMsg "UP Vote containers removed"
+  fi
+}
+
+uninstallDockerImages() {
+  IMAGES_TO_DELETE=`docker images | grep 'vote-nginx\|vote-backend\|vote-postgres' | awk '{ print $3 }' | tr '\n' ' '`
+  if [ -z "$IMAGES_TO_DELETE" ]
+  then
+    logInfoMsg "UP Vote images not found. Nothing to remove."
+  else
+    logInfoMsg "Removing images: ${IMAGES_TO_DELETE}"
+	docker rmi $IMAGES_TO_DELETE --force
+	logInfoMsg "UP Vote images removed"
+  fi
 }
 
 composePostgres() {
@@ -184,6 +236,10 @@ initializeLogger
 checkSuperUser
 initializeInstaller
 checkDocker
+checkDockerCompose
+uninstallDockerContainers
+uninstallDockerImages
+applyDeployConfig
 composeContainers
   
 exit 0

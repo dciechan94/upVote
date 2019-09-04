@@ -1,29 +1,48 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-/**
- * Direct selector to the browseElectionPage state domain
- */
+const selectBrowseElection = state => state.browseElection || initialState;
 
-const selectBrowseElectionPageDomain = state =>
-  state.get('browseElectionPage', initialState);
+const makeSelectPolls = () =>
+  createSelector(
+    selectBrowseElection,
+    (browseElectionState) => browseElectionState.polls
+  );
+const makeSelectPollQueryString = () =>
+  createSelector(
+    selectBrowseElection,
+    (browseElectionState) => browseElectionState.pollQueryString
+  );
 
-/**
- * Other specific selectors
- */
-const makeSelectBrowseData = () => createSelector(
-  selectBrowseElectionPageDomain,
-  (browseState) => browseState.get('browseData')
+const makeSelectCandidates = () =>
+  createSelector(
+    selectBrowseElection,
+    (browseElectionState) => browseElectionState.candidates
+  );
+const makeSelectSelectedCandidates = () =>
+  createSelector(
+    selectBrowseElection,
+    (browseElectionState) => browseElectionState.selectedCandidates
+  );
+
+const makeSelectPollInDialog = () =>
+createSelector(
+  selectBrowseElection,
+  (browseElectionState) => browseElectionState.pollInDialog
+);
+const makeSelectIsVoteDialogOpen = () =>
+createSelector(
+  selectBrowseElection,
+  (browseElectionState) => browseElectionState.isVoteDialogOpen
 );
 
+export {
+  selectBrowseElection,
 
-/**
- * Default selector used by BrowseElectionPage
- */
-
-const makeSelectBrowseElectionPage = () =>
-  createSelector(selectBrowseElectionPageDomain, substate => substate.toJS());
-
-export default makeSelectBrowseElectionPage;
-export { selectBrowseElectionPageDomain,
-  makeSelectBrowseData };
+  makeSelectPolls,
+  makeSelectPollQueryString,
+  makeSelectCandidates,
+  makeSelectSelectedCandidates,
+  makeSelectPollInDialog,
+  makeSelectIsVoteDialogOpen,
+};

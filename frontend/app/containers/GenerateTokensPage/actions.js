@@ -1,37 +1,28 @@
 import {
-  CHANGE_TOKENS_COUNT,
-  CHANGE_TOKENS_VALID_TIMEOUT,
-  CHANGE_TOKENS_SELECTION,
+  CHANGE_TOKEN_COUNT,
+  CHANGE_TOKEN_VALID_IN_DAYS,
+
   GENERATE_TOKENS,
   GENERATE_TOKENS_SUCCESS,
   GENERATE_TOKENS_ERROR,
-  GET_ACTIVE_TOKENS,
-  GET_ACTIVE_TOKENS_SUCCESS,
-  GET_ACTIVE_TOKENS_ERROR,
-  DELETE_TOKENS,
-  DELETE_TOKENS_SUCCESS,
-  DELETE_TOKENS_ERROR
+
+  FETCH_ACTUAL_TOKENS,
+  FETCH_ACTUAL_TOKENS_SUCCESS,
+  FETCH_ACTUAL_TOKENS_ERROR,
 } from './constants';
 
 
-export function changeTokensCount(count) {
+
+export function changeTokenCount(tokenCount) {
   return {
-    type: CHANGE_TOKENS_COUNT,
-    count,
+    type: CHANGE_TOKEN_COUNT,
+    tokenCount,
   };
 }
-
-export function changeTokensValidTimeout(timeoutInDays) {
+export function changeTokenValidInDays(tokenValidInDays) {
   return {
-    type: CHANGE_TOKENS_VALID_TIMEOUT,
-    timeoutInDays,
-  };
-}
-
-export function changeCodesSelection(codeId) {
-  return {
-    type: CHANGE_TOKENS_SELECTION,
-    codeId,
+    type: CHANGE_TOKEN_VALID_IN_DAYS,
+    tokenValidInDays,
   };
 }
 
@@ -40,57 +31,34 @@ export function generateTokens() {
     type: GENERATE_TOKENS,
   };
 }
-
 export function generateTokens_success(jsonData) {
   return {
     type: GENERATE_TOKENS_SUCCESS,
-    jsonData,
+    jsonData
   };
 }
-
 export function generateTokens_error(jsonData) {
   return {
     type: GENERATE_TOKENS_ERROR,
+    jsonData
+  };
+}
+
+
+export function fetchActualTokens() {
+  return {
+    type: FETCH_ACTUAL_TOKENS,
+  };
+}
+export function fetchActualTokens_success(jsonData) {
+  return {
+    type: FETCH_ACTUAL_TOKENS_SUCCESS,
     jsonData,
   };
 }
-
-export function getActiveTokens() {
+export function fetchActualTokens_error(jsonData) {
   return {
-    type: GET_ACTIVE_TOKENS,
-  };
-}
-
-export function getActiveTokens_success(jsonData) {
-  return {
-    type: GET_ACTIVE_TOKENS_SUCCESS,
-    jsonData,
-  };
-}
-
-export function getActiveTokens_error(jsonData) {
-  return {
-    type: GET_ACTIVE_TOKENS_ERROR,
-    jsonData,
-  };
-}
-
-export function deleteTokens() {
-  return {
-    type: DELETE_TOKENS,
-  };
-}
-
-export function deleteTokens_success(jsonData) {
-  return {
-    type: DELETE_TOKENS_SUCCESS,
-    jsonData,
-  };
-}
-
-export function deleteTokens_error(jsonData) {
-  return {
-    type: DELETE_TOKENS_ERROR,
+    type: FETCH_ACTUAL_TOKENS_ERROR,
     jsonData,
   };
 }

@@ -1,55 +1,70 @@
-/**
- *
- * LoginPage
- *
- */
-
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import { Helmet } from 'react-helmet';
+import { createStructuredSelector } from 'reselect';
+import { injectIntl } from 'react-intl';
+import { push } from 'connected-react-router/immutable';
 
-import { Card } from "@blueprintjs/core";
+import { Card } from '@blueprintjs/core';
 
-import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
-import { changeEmail, changePassword, postLogin } from './actions';
-import { makeSelectEmail, makeSelectPassword, makeSelectIsEmailValid, makeSelectIsPasswordValid, makeSelectSysFirstName } from './selectors'
+import { useInjectReducer } from 'utils/injectReducer';
+import { useInjectSaga } from 'utils/injectSaga';
+
+import { changeEmail, changePassword, postLogin, clearLoginPageData } from './actions';
+import { makeSelectEmail, makeSelectPassword, makeSelectIsEmailValid, makeSelectIsPasswordValid } from './selectors'
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
 
 import LoginForm from 'components/LoginForm';
 
-/* eslint-disable react/prefer-stateless-function */
-export class LoginPage extends React.PureComponent {
-  render() {
-    return (
-      <Card>
-      <Card style={{margin: "auto", width: 400}}>
-        <Helmet>
-          <title>Sign In</title>
-          <meta name="description" content="Fill in the login form to enter the system." />
-        </Helmet>
+const key = 'login';
 
-        <LoginForm
-          email={this.props.email}
-          password={this.props.password}
+export function LoginPage({
+  intl,
+  email,
+  password,
+  isEmailValid,
+  isPasswordValid,
+  onChangeEmail,
+  onChangePassword,
+  onPostLogin,
+  onRedirectToRegistrationPage,
+}) {
+  useInjectReducer({ key, reducer });
+  useInjectSaga({ key, saga });
 
-          isEmailValid={this.props.isEmailValid}
-          isPasswordValid={this.props.isPasswordValid}
+  const {formatMessage} = intl;
 
-          onChangeEmail={this.props.onChangeEmail}
-          onChangePassword={this.props.onChangePassword}
-          onPostLogin={this.props.onPostLogin}
+  return (
+    <div>
+      <Helmet>
+        <title>{formatMessage(messages.helmetTitle)}</title>
+        <meta
+          name="description"
+          content={formatMessage(messages.helmetDescription)}
         />
+      </Helmet>
+      <Card>
+        <Card style={{margin: "auto", width: 400}}>
+          <LoginForm
+            email={email}
+            password={password}
+
+            isEmailValid={isEmailValid}
+            isPasswordValid={isPasswordValid}
+
+            onChangeEmail={onChangeEmail}
+            onChangePassword={onChangePassword}
+            onPostLogin={onPostLogin}
+            onRedirectToRegistrationPage={onRedirectToRegistrationPage}
+          />
+        </Card>
       </Card>
-      </Card>
-    );
-  }
+    </div>
+  );
 }
 
 LoginPage.propTypes = {
@@ -62,7 +77,9 @@ LoginPage.propTypes = {
   onChangeEmail: PropTypes.func,
   onChangePassword: PropTypes.func,
   onPostLogin: PropTypes.func,
+  onRedirectToRegistrationPage: PropTypes.func,
 };
+
 
 const mapStateToProps = createStructuredSelector({
   email: makeSelectEmail(),
@@ -70,15 +87,14 @@ const mapStateToProps = createStructuredSelector({
 
   isEmailValid: makeSelectIsEmailValid(),
   isPasswordValid: makeSelectIsPasswordValid(),
-
-  sysFirstName: makeSelectSysFirstName(),
 });
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     onChangeEmail: (evt) => dispatch(changeEmail(evt.target.value)),
     onChangePassword: (evt) => dispatch(changePassword(evt.target.value)),
     onPostLogin: () => dispatch(postLogin()),
+    onRedirectToRegistrationPage: () => { dispatch(clearLoginPageData()); dispatch(push('/signup'))},
   };
 }
 
@@ -87,11 +103,8 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'loginPage', reducer });
-const withSaga = injectSaga({ key: 'loginPage', saga });
-
 export default compose(
-  withReducer,
-  withSaga,
   withConnect,
+  injectIntl,
+  memo
 )(LoginPage);

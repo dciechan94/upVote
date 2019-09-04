@@ -1,21 +1,13 @@
-/*
- *
- * MenuBar reducer
- *
- */
+import produce from 'immer';
 
-import { fromJS } from 'immutable';
-import { DEFAULT_ACTION } from './constants';
+export const initialState = {
+};
 
-export const initialState = fromJS({});
+const menuBarReducer = (state = initialState, action) =>
+  produce(state, draft => {
+    switch (action.type) {
 
-function menuBarReducer(state = initialState, action) {
-  switch (action.type) {
-    case DEFAULT_ACTION:
-      return state;
-    default:
-      return state;
-  }
-}
+    }
+  });
 
 export default menuBarReducer;

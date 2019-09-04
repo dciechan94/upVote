@@ -5,12 +5,12 @@ import {
   CHANGE_LAST_NAME,
   CHANGE_PASSWORD,
   CHANGE_PASSWORD_REPEAT,
+  CHANGE_TERMS_CHECKBOX_VALUE,
   POST_NEW_USER,
   POST_NEW_USER_SUCCESS,
   POST_NEW_USER_ERROR,
   CLOSE_REGISTRATION_RESULT_MODAL,
 } from './constants';
-
 
 export function changeRegistrationCode(registrationCode) {
   return {
@@ -51,6 +51,12 @@ export function changePasswordRepeat(passwordRepeat) {
   return {
     type: CHANGE_PASSWORD_REPEAT,
     passwordRepeat,
+  };
+}
+
+export function changeTermsCheckBoxValue() {
+  return {
+    type: CHANGE_TERMS_CHECKBOX_VALUE,
   };
 }
 

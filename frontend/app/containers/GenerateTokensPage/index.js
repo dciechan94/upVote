@@ -1,155 +1,143 @@
-/**
- *
- * GenerateTokensPage
- *
- */
-
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import { Helmet } from 'react-helmet';
+import { createStructuredSelector } from 'reselect';
+import { injectIntl } from 'react-intl';
 
-import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
-
-import { 
+import {
   Button,
   Card,
-  Checkbox,
   FormGroup,
-  HTMLTable,
-  NumericInput,
- } from "@blueprintjs/core";
+  InputGroup,
+  Intent,
+  TextArea,
+} from "@blueprintjs/core";
 
-import { 
-  makeSelectTokensCount, 
-  makeSelectTokensTimeout, 
-  makeSelectTokenIds,
-  makeSelectCodesSelection
-} from './selectors'
+import { useInjectReducer } from 'utils/injectReducer';
+import { useInjectSaga } from 'utils/injectSaga';
 
-import { 
-  changeTokensCount, 
-  changeTokensValidTimeout,
-  changeCodesSelection,
-  generateTokens,
-  getActiveTokens,
-  deleteTokens,
-} from './actions';
-
-import makeSelectGenerateTokensPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
 
+import { changeTokenCount, changeTokenValidInDays, generateTokens, fetchActualTokens } from './actions';
+import { makeSelectTokenCount, makeSelectTokenValidInDays, makeSelectActualTokens, makeSelectNewTokens } from './selectors'
 
-export class GenerateTokensPage extends React.PureComponent {
-  
-  render() {
 
-    var longToDate = function(millisec) {
-      const options = {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric'
-      }
+const key = 'generateTokens';
 
-      var d = new Date(millisec);
-      return new Intl.DateTimeFormat("pl-PL", options).format(d);
-  }
+export function GenerateTokensPage({
+  intl,
+  // model
+  tokenCount,
+  tokenValidInDays,
+  actualTokens,
+  newTokens,
 
-    console.log(this.props.codes)
-    var codesTableHeaders = [ "Code", "Valid until" ]
-    var codes = this.props.codes;
-    var codesSelection = this.props.codesSelection;
+  // validation
 
-    return (
+  // actions
+  onChangeTokenCount,
+  onChangeTokenValidInDays,
+  onGenerateTokens,
+  onFetchActualTokens,
+}) {
+  useInjectReducer({ key, reducer });
+  useInjectSaga({ key, saga });
+
+  useEffect(() => {
+    onFetchActualTokens()
+  }, []);
+
+
+  const {formatMessage} = intl;
+
+  return (
+    <div>
+      <Helmet>
+        <title>{formatMessage(messages.helmetTitle)}</title>
+        <meta
+          name="description"
+          content={formatMessage(messages.helmetDescription)}
+        />
+      </Helmet>
       <Card>
-        <FormGroup
-          label="Number of codes"
-          labelFor="text-input"
-        >        
-          <NumericInput id="text-input" onValueChange={this.props.onCountChange} value={this.props.count}/>
-        </FormGroup>
-        
-        <FormGroup
-          helperText="[in days]"
-          label="Validity time"
-          labelFor="text-input"
-        >    
-          <NumericInput id="text-input" onValueChange={this.props.onTimeoutChange} value={this.props.timeout}/>
-        </FormGroup>
-        <Button icon="add" text="Generate tokens" onClick={this.props.onClickGenerateCodes}/>
-        
-        <HTMLTable condensed interactive bordered striped>
-          <thead>
-            <tr>
-              {codesTableHeaders.map(header => (
-                <th key={header}> {header} </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {codes.map(code => (
-              <tr key={code.get("id")}>
-                <td key={code.get("id")+"-code"}> <Checkbox key={code.get("id")+"-chb"} label={code.get("code")} onClick={() => this.props.onCheckboxSelect(code.get("id"))} checked={codesSelection.contains(code.get("id"))}/> </td>
-                <td key={code.get("id")+"-validUntil"}> { longToDate(code.get("validUntil"))} </td>
-              </tr>
-            ))}
-          </tbody>
-        </HTMLTable>
-        
-        <Button icon="refresh" text="Refresh" onClick={this.props.onClickRefreshCodes} />
-        
-        <Button icon="delete" text="Delete selected" onClick={this.props.onClickDeleteSelectedCodes}/>
-        <Button icon="delete" text="Delete all" onClick={this.props.onClickDeleteAllCodes}/>
-        
+        <Card style={{margin: "auto", width: 800}}>
+          <FormGroup
+            label={formatMessage(messages.tokenCount)}
+            labelFor="tokenCount-input"
+          >
+            <InputGroup
+              id="tokenCount-input"
+              onChange={onChangeTokenCount}
+            />
+          </FormGroup>
+
+          <FormGroup
+            label={formatMessage(messages.tokenValidInDays)}
+            labelFor="tokenValidInDays-input"
+          >
+            <InputGroup
+              id="tokenValidInDays-input"
+              onChange={onChangeTokenValidInDays}
+            />
+          </FormGroup>
+
+          <Button text={formatMessage(messages.generateTokens)} onClick={onGenerateTokens}/>
+          <br></br>
+          <br></br>
+          <br></br>
+          <FormGroup
+            label = {formatMessage(messages.actualTokens)}
+            labelFor = "actualTokens-form">
+
+            <TextArea
+              fill = {true}
+              growVertically={true}
+              large={true}
+              intent={Intent.NONE}
+              value={actualTokens.map(item => item.code +"("+item.validDays+")").join(', ')}
+            />
+          </FormGroup>
+
+
+        </Card>
       </Card>
-    );
-  }
+    </div>
+  );
 }
 
 GenerateTokensPage.propTypes = {
-  count: PropTypes.number,
-  timeout: PropTypes.number,
+  tokenCount: PropTypes.number,
+  tokenValidInDays: PropTypes.number,
+  actualTokens: PropTypes.array,
+  newTokens: PropTypes.array,
 
-  isCountValid: PropTypes.bool,
-  isTimeoutValid: PropTypes.bool,
+  // validation
 
-  codes: PropTypes.object,
-  codesSelection: PropTypes.object,
-
-  dispatch: PropTypes.func.isRequired,
-  onClickRefreshCodes: PropTypes.func.isRequired,
-  onClickGenerateCodes: PropTypes.func.isRequired,
-  onClickDeleteSelectedCodes: PropTypes.func.isRequired,
-  onClickDeleteAllCodes: PropTypes.func.isRequired,
-  onCheckboxSelect: PropTypes.func.isRequired,
-
-  onCountChange: PropTypes.func.isRequired,
-  onTimeoutChange: PropTypes.func.isRequired,
+  // actions
+  onChangeTokenCount: PropTypes.func,
+  onChangeTokenValidInDays: PropTypes.func,
+  onGenerateTokens: PropTypes.func,
+  onFetchActualTokens: PropTypes.func,
 };
 
+
 const mapStateToProps = createStructuredSelector({
-  generateTokensPage: makeSelectGenerateTokensPage(),
-  count: makeSelectTokensCount(),
-  timeout: makeSelectTokensTimeout(),
-  codes: makeSelectTokenIds(),
-  codesSelection: makeSelectCodesSelection(),
+  tokenCount: makeSelectTokenCount(),
+  tokenValidInDays: makeSelectTokenValidInDays(),
+  actualTokens: makeSelectActualTokens(),
+  newTokens: makeSelectNewTokens(),
 });
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
-    onClickRefreshCodes: () => dispatch(getActiveTokens()),
-    onClickGenerateCodes: () => dispatch(generateTokens()),
-    onClickDeleteSelectedCodes:() => dispatch(deleteTokens()),
-    onClickDeleteAllCodes: () => dispatch(deleteTokens()),
-    onCountChange: () => dispatch(changeTokensCount()),
-    onTimeoutChange: () => dispatch(changeTokensValidTimeout()),
-    onCheckboxSelect: (codeId) => dispatch(changeCodesSelection(codeId))
+    onChangeTokenCount: (evt) => dispatch(changeTokenCount(evt.target.value)),
+    onChangeTokenValidInDays: (evt) => dispatch(changeTokenValidInDays(evt.target.value)),
+    onGenerateTokens: () => dispatch(generateTokens()),
+    onFetchActualTokens: () => dispatch(fetchActualTokens()),
   };
 }
 
@@ -158,11 +146,8 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'generateTokensPage', reducer });
-const withSaga = injectSaga({ key: 'generateTokensPage', saga });
-
 export default compose(
-  withReducer,
-  withSaga,
   withConnect,
+  injectIntl,
+  memo
 )(GenerateTokensPage);

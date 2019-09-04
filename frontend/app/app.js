@@ -1,10 +1,3 @@
-/**
- * app.js
- *
- * This is the entry file for the application, only setup and boilerplate
- * code.
- */
-
 // Needed for redux-saga es6 generator support
 import '@babel/polyfill';
 
@@ -12,7 +5,7 @@ import '@babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router/immutable';
+import { ConnectedRouter } from 'connected-react-router';
 import FontFaceObserver from 'fontfaceobserver';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
@@ -32,13 +25,12 @@ import configureStore from './configureStore';
 // Import i18n messages
 import { translationMessages } from './i18n';
 
-import "normalize.css/normalize.css"
-import "@blueprintjs/icons/lib/css/blueprint-icons.css"
-import "@blueprintjs/core/lib/css/blueprint.css"
-import "@blueprintjs/datetime/lib/css/blueprint-datetime.css"
-import "@blueprintjs/select/lib/css/blueprint-select.css"
-import "@blueprintjs/table/lib/css/table.css"
-import "@blueprintjs/timezone/lib/css/blueprint-timezone.css"
+import '@blueprintjs/icons/lib/css/blueprint-icons.css'
+import '@blueprintjs/core/lib/css/blueprint.css'
+import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
+import '@blueprintjs/select/lib/css/blueprint-select.css'
+import '@blueprintjs/table/lib/css/table.css'
+import '@blueprintjs/timezone/lib/css/blueprint-timezone.css'
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)

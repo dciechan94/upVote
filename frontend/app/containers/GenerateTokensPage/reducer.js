@@ -1,85 +1,58 @@
-import { fromJS } from 'immutable';
+import produce from 'immer';
 import {
-  CHANGE_TOKENS_COUNT,
-  CHANGE_TOKENS_VALID_TIMEOUT,
-  CHANGE_TOKENS_SELECTION,
+  CHANGE_TOKEN_COUNT,
+  CHANGE_TOKEN_VALID_IN_DAYS,
+
   GENERATE_TOKENS,
   GENERATE_TOKENS_SUCCESS,
   GENERATE_TOKENS_ERROR,
-  GET_ACTIVE_TOKENS,
-  GET_ACTIVE_TOKENS_SUCCESS,
-  GET_ACTIVE_TOKENS_ERROR,
-  DELETE_TOKENS,
-  DELETE_TOKENS_SUCCESS,
-  DELETE_TOKENS_ERROR
+
+  FETCH_ACTUAL_TOKENS,
+  FETCH_ACTUAL_TOKENS_SUCCESS,
+  FETCH_ACTUAL_TOKENS_ERROR,
 } from './constants';
 
-export const initialState = fromJS({
-  count: 1,
-  timeout: 7,
 
-  isCountValid: true,
-  isTimeoutValid: true,
+export const initialState = {
+  tokenCount: 0,
+  tokenValidInDays: 0,
+  actualTokens: [],
+  newTokens: [],
+};
 
-  codes: [ { id: 10, validUntil: 1549800351711, code: "startupDate"}, { id: 11, validUntil: 1549800351711, code: "startupDate"} ],
-  codesSelection: [ 11 ]
-});
+const generateTokensReducer = (state = initialState, action) =>
+  produce(state, draft => {
+    switch (action.type) {
 
-function generateTokensPageReducer(state = initialState, action) {
-  switch (action.type) {
-    case CHANGE_TOKENS_COUNT:
-      return state;
+      case CHANGE_TOKEN_COUNT:
+        draft.tokenCount = parseInt(action.tokenCount)
+        break;
 
-    case CHANGE_TOKENS_VALID_TIMEOUT:
-      return state;
+      case CHANGE_TOKEN_VALID_IN_DAYS:
+        draft.tokenValidInDays = parseInt(action.tokenValidInDays)
+        break;
 
-    case CHANGE_TOKENS_SELECTION:
-      var codeId = action.codeId;
-      var modified = state.get('codesSelection').toArray();
+      case GENERATE_TOKENS:
+        break;
 
-      if (state.get('codesSelection').contains(codeId)) {
-        var position = modified.indexOf(codeId);
-        if ( ~position ) modified.splice(position, 1);
-      } else {
-        modified.push(codeId)
-      }
-      return state.set('codesSelection', fromJS(modified))
+      case GENERATE_TOKENS_SUCCESS:
+        draft.newTokens  = action.jsonData
+        break;
 
-    case GENERATE_TOKENS:
-      return state;
+      case GENERATE_TOKENS_ERROR:
+        break;
 
-    case GENERATE_TOKENS_SUCCESS:
-      return state;
+      case FETCH_ACTUAL_TOKENS:
+        break;
 
-    case GENERATE_TOKENS_ERROR:
-      return state
-        .set('errorDetails', fromJS(action.jsonData.details));
+      case FETCH_ACTUAL_TOKENS_SUCCESS:
+        console.log(action.jsonData.map(item => item.id).join(', '))
+        draft.actualTokens = action.jsonData
+        break;
 
-    case GET_ACTIVE_TOKENS:
-      return state;
+      case FETCH_ACTUAL_TOKENS_ERROR:
+        break;
+    }
+  });
 
-    case GET_ACTIVE_TOKENS_SUCCESS:
-      return state
-        .set('codesSelection', fromJS([]))
-        .set('codes', fromJS(action.jsonData));
-
-    case GET_ACTIVE_TOKENS_ERROR:
-      return state
-        .set('errorDetails', fromJS(action.jsonData.details));
-
-    case DELETE_TOKENS:
-      return state;
-
-    case DELETE_TOKENS_SUCCESS:
-      return state;
-
-    case DELETE_TOKENS_ERROR:
-      return state
-        .set('errorDetails', fromJS(action.jsonData.details));
-
-    default:
-      return state;
-  }
-}
-
-export default generateTokensPageReducer;
+export default generateTokensReducer;

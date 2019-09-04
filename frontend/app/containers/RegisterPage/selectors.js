@@ -1,95 +1,99 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-/**
- * Direct selector to the registerPage state domain
- */
-
-const selectRegisterPageDomain = state =>
-  state.get('registerPage', initialState);
-
-/**
- * Other specific selectors
- */
-const makeSelectRegistrationCode = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('registrationCode')
-);
-
-const makeSelectEmail = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('email')
-);
-
-const makeSelectFirstName = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('firstName')
-);
-
-const makeSelectLastName = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('lastName')
-);
-
-const makeSelectPassword = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('password')
-);
-
-const makeSelectPasswordRepeat = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('passwordRepeat')
-);
+const selectRegister = state => state.register || initialState;
 
 
+const makeSelectRegistrationCode = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.registrationCode
+  );
 
-const makeSelectIsRegistrationCodeValid = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('isRegistrationCodeValid')
-);
-const makeSelectIsEmailValid = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('isEmailValid')
-);
-const makeSelectIsFirstNameValid = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('isFirstNameValid')
-);
-const makeSelectIsLastNameValid = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('isLastNameValid')
-);
-const makeSelectIsPasswordValid = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('isPasswordValid')
-);
-const makeSelectIsPasswordRepeatValid = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('isPasswordRepeatValid')
-);
+const makeSelectEmail = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.email
+  );
 
-const makeSelectShowRegistrationResultModal = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('showRegistrationResultModal')
-);
-const makeSelectIsRegistrationResultError = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('isRegistrationResultError')
-);
-const makeSelectRegistrationResultMessage = () => createSelector(
-  selectRegisterPageDomain,
-  (registerState) => registerState.get('registrationResultMessage')
-);
-/**
- * Default selector used by RegisterPage
- */
+const makeSelectFirstName = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.firstName
+  );
 
-const makeSelectRegisterPage = () =>
-  createSelector(selectRegisterPageDomain, substate => substate.toJS());
+const makeSelectLastName = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.lastName
+  );
 
-export default makeSelectRegisterPage;
+const makeSelectPassword = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.password
+  );
+
+const makeSelectPasswordRepeat = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.passwordRepeat
+  );
+
+const makeSelectIsRegistrationCodeValid = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.isRegistrationCodeValid
+  );
+const makeSelectIsEmailValid = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.isEmailValid
+  );
+const makeSelectIsFirstNameValid = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.isFirstNameValid
+  );
+const makeSelectIsLastNameValid = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.isLastNameValid
+  );
+const makeSelectIsPasswordValid = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.isPasswordValid
+  );
+const makeSelectIsPasswordRepeatValid = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.isPasswordRepeatValid
+  );
+const makeSelectTermsCheckBoxValue = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.termsCheckBoxValue
+  );
+
+const makeSelectShowRegistrationResultModal = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.showRegistrationResultModal
+  );
+const makeSelectIsRegistrationResultError = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.isRegistrationResultError
+  );
+const makeSelectRegistrationResultMessage = () =>
+  createSelector(
+    selectRegister,
+    (registerState) => registerState.registrationResultMessage
+  );
+
 export {
-  selectRegisterPageDomain,
+  selectRegister,
   makeSelectRegistrationCode,
   makeSelectEmail,
   makeSelectFirstName,
@@ -103,6 +107,7 @@ export {
   makeSelectIsLastNameValid,
   makeSelectIsPasswordValid,
   makeSelectIsPasswordRepeatValid,
+  makeSelectTermsCheckBoxValue,
 
   makeSelectShowRegistrationResultModal,
   makeSelectIsRegistrationResultError,

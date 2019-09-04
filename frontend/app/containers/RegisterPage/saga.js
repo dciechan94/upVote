@@ -1,14 +1,10 @@
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
+import request from 'utils/request';
+
 import { POST_NEW_USER } from './constants';
 import { SERVER_REST_URL } from '../App/constants';
-//import { reposLoaded, repoLoadingError, loadedBaseData } from 'containers/App/actions';
 import { createNewUser_success, createNewUser_error } from './actions';
-
-import request from 'utils/request';
-//import { makeSelectUsername } from 'containers/HomePage/selectors';
-import { makeSelectRegistrationCode, makeSelectEmail, makeSelectFirstName, makeSelectLastName, makeSelectPassword,
-  makeSelectPasswordRepeat } from './selectors'
-
+import { makeSelectRegistrationCode, makeSelectEmail, makeSelectFirstName, makeSelectLastName, makeSelectPassword } from './selectors'
 
 export function* postUser() {
   const registrationCodeVal = yield select(makeSelectRegistrationCode());
@@ -17,31 +13,32 @@ export function* postUser() {
   const lastNameVal = yield select(makeSelectLastName())
   const passwordVal = yield select(makeSelectPassword())
 
-  const requestURL = SERVER_REST_URL + `users/login/`;
+
+
+  const requestURL = SERVER_REST_URL + `users?code=` + registrationCodeVal;
   const requestOptions = {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      registrationCode: registrationCodeVal,
-      username: emailVal,
-      email: emailVal,
       firstName: firstNameVal,
       lastName: lastNameVal,
+      email: emailVal,
       passwordHash: passwordVal
     })
   }
 
+  try {
+    const jsonData = yield call(request, requestURL, requestOptions);
+    console.log(jsonData)
+    yield put(createNewUser_success(jsonData));
 
-  const jsonData = yield call(request, requestURL, requestOptions);
-  if(jsonData.status >= 200 && jsonData.status <= 299) {
-    yield put(createNewUser_success(jsonData.data));
-  } else {
-    yield put(createNewUser_error(jsonData.data));
+  } catch (error) {
+    console.log(requestURL + " --> "+ error.code + ": " + error.message)
+    yield put(createNewUser_error(error));
   }
 }
-
 
 export function* registerUser() {
   yield takeLatest(POST_NEW_USER, postUser)

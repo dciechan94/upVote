@@ -1,11 +1,17 @@
-import { 
-    FATAL_ERROR_OCCURED 
-} from "./constants";
+import {
+  OPEN_GLOBAL_DIALOG,
+  CLOSE_GLOBAL_DIALOG
+} from './constants';
 
+export function openGlobalDialog(config) {
+  return {
+    type: OPEN_GLOBAL_DIALOG,
+    config,
+  };
+}
 
-export function fatalErrorOccured(message) {
-    return {
-      type: FATAL_ERROR_OCCURED,
-      message,
-    };
-  }
+export function closeGlobalDialog() {
+  return {
+    type: CLOSE_GLOBAL_DIALOG,
+  };
+}

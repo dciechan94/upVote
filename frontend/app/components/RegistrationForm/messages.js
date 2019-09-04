@@ -1,9 +1,3 @@
-/*
- * RegistrationForm Messages
- *
- * This contains all the text for the RegistrationForm component.
- */
-
 import { defineMessages } from 'react-intl';
 
 export const scope = 'app.components.RegistrationForm';
@@ -44,5 +38,17 @@ export default defineMessages({
   modalLabel: {
     id: `${scope}.modalLabel`,
     defaultMessage: 'This is the RegistrationForm component!',
-  }
+  },
+  lockButtonToolTip: {
+    id: `${scope}.lockButtonToolTip`,
+    defaultMessage: 'Keep you password safe and secret!',
+  },
+  requiredTip: {
+    id: `${scope}.requiredTip`,
+    defaultMessage: '(required)',
+  },
+  termsOfServiceAccept: {
+    id: `${scope}.termsOfServiceAccept`,
+    defaultMessage: 'I agree and accept the Terms of Service.',
+  },
 });

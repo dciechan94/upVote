@@ -1,0 +1,56 @@
+version: '2'
+services:
+  db2:
+    privileged: true
+    container_name: "db2"
+    # no latest tag available
+    image: store/ibmcorp/db2_developer_c:11.1.4.4-x86_64
+    ports:
+      - 50000:50000
+      - 55000:55000
+    environment:
+      LICENSE: "accept"
+      DB2INSTANCE: "db2inst1"
+      DB2INST1_PASSWORD: "db2inst1"
+      DBNAME: "bg"
+      # need to be set to true for MacOS
+      IS_OSXFS: "false"
+      ENABLE_ORACLE_COMPATIBILITY: "false"
+      BLU: "false"
+      TO_CREATE_SAMPLEDB: "false"
+      REPODB: "false"
+      PERSISTENT_HOME: "true"
+    volumes:
+      - db2_data:/database
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.14
+    container_name: elasticsearch
+    environment:
+      - cluster.name=bg-cluster
+      - node.name=node1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.cors.enabled=true
+      - http.cors.allow-origin="*"
+      - http.cors.allow-headers="X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+      - http.cors.allow-credentials=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200      
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.6.14
+    container_name: kibana
+    environment:
+      - xpack.security.enabled=false
+    ports:
+      - 5601:5601    
+volumes:
+  db2_data:
+  esdata:

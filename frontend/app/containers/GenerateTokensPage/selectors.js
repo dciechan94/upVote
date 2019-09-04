@@ -1,48 +1,38 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-/**
- * Direct selector to the generateTokensPage state domain
- */
+const selectGenerateTokens = state => state.generateTokens || initialState;
 
-const selectGenerateTokensPageDomain = state =>
-  state.get('generateTokensPage', initialState);
 
-/**
- * Other specific selectors
- */
-const makeSelectTokensCount = () => createSelector(
-  selectGenerateTokensPageDomain,
-  (generateTokensState) => generateTokensState.get('count')
-);
+const makeSelectTokenCount = () =>
+  createSelector(
+    selectGenerateTokens,
+    (generateTokensState) => generateTokensState.tokenCount
+  );
 
-const makeSelectTokensTimeout = () => createSelector(
-  selectGenerateTokensPageDomain,
-  (generateTokensState) => generateTokensState.get('timeout')
-);
+const makeSelectTokenValidInDays = () =>
+  createSelector(
+    selectGenerateTokens,
+    (generateTokensState) => generateTokensState.tokenValidInDays
+  );
 
-const makeSelectTokenIds = () => createSelector(
-  selectGenerateTokensPageDomain,
-  (generateTokensState) => generateTokensState.get('codes')
-);
+const makeSelectActualTokens = () =>
+  createSelector(
+    selectGenerateTokens,
+    (generateTokensState) => generateTokensState.actualTokens
+  );
 
-const makeSelectCodesSelection = () => createSelector(
-  selectGenerateTokensPageDomain,
-  (generateTokensState) => generateTokensState.get('codesSelection')
-);
+const makeSelectNewTokens = () =>
+  createSelector(
+    selectGenerateTokens,
+    (generateTokensState) => generateTokensState.newTokens
+  );
 
-/**
- * Default selector used by GenerateTokensPage
- */
+export {
+  selectGenerateTokens,
 
-const makeSelectGenerateTokensPage = () =>
-  createSelector(selectGenerateTokensPageDomain, substate => substate.toJS());
-
-export default makeSelectGenerateTokensPage;
-export { 
-  selectGenerateTokensPageDomain,
-  makeSelectTokensCount, 
-  makeSelectTokensTimeout,
-  makeSelectTokenIds,
-  makeSelectCodesSelection
+  makeSelectTokenCount,
+  makeSelectTokenValidInDays,
+  makeSelectActualTokens,
+  makeSelectNewTokens,
 };
